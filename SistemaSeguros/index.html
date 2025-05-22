@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Seguro de Salud</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="container">
+  <div class="left">
+    <img src="img/usuario.jpg" alt="Icono Usuario">
+  </div>
+  <div class="right">
+    <div class="form-box">
+      <h2>Seguro de Salud</h2>
+
+      <form method="POST" action="login.php">
+        <input type="text" name="correo" placeholder="Correo o usuario" required>
+        <input type="password" name="contrasena" placeholder="Contraseña" required>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+
+      <button class="registrar-btn" onclick="abrirModal()">Registrar nuevo Usuario</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="cerrar" onclick="cerrarModal()">&times;</span>
+    <h3>Registrar Usuario</h3>
+    <form method="POST" action="registro.php">
+      <input type="text" name="usuario" placeholder="Usuario" required>
+      <input type="text" name="telefono" placeholder="Teléfono" required>
+      <input type="text" name="direccion" placeholder="Dirección" required>
+      <input type="email" name="correo" placeholder="Correo" required>
+      <input type="password" name="contrasena" placeholder="Contraseña" required>
+      <select id="rol" name="rol" required>
+        <option value="">Seleccione un rol</option>
+        <option value="Cliente">Cliente</option>
+        <option value="Agente">Agente</option>
+        <option value="Administrador">Administrador</option>
+      </select>
+      <select name="estado" required>
+        <option value="">Seleccione estado</option>
+        <option value="1">Activo</option>
+        <option value="0">Inactivo</option>
+      </select>
+      <button type="submit">Registrar</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function abrirModal() {
+    document.getElementById('modal').style.display = 'flex';
+  }
+
+  function cerrarModal() {
+    document.getElementById('modal').style.display = 'none';
+  }
+
+  window.onclick = function(e) {
+    const modal = document.getElementById('modal');
+    if (e.target === modal) {
+      cerrarModal();
+    }
+  };
+</script>
+</body>
+</html>
