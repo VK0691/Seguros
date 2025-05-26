@@ -149,6 +149,7 @@ button:hover {
 #rol {
   margin-bottom: 10px;
   display: block; /* asegura que el margin-bottom funcione bien */
+<<<<<<< HEAD
 } 
 /* Contenedor general del Panel de Administrador */
 .admin-container {
@@ -249,3 +250,6 @@ button:hover {
   text-decoration: underline;
 }
 
+=======
+}
+>>>>>>> ef77b7ae32ba5f6e19a06ebcfb37fb714aae0d40

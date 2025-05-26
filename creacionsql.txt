@@ -1,0 +1,36 @@
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `usuario` varchar(100) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `direccion` varchar(100) DEFAULT NULL,
+  `correo` varchar(100) DEFAULT NULL,
+  `contrasena` varchar(100) DEFAULT NULL,
+  `rol` varchar(20) NOT NULL DEFAULT 'Cliente',
+  `estado` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `usuario`, `telefono`, `direccion`, `correo`, `contrasena`, `rol`, `estado`) VALUES
+(189093951, 'Jadira', '0967191669', 'Juan Benigno', 'Jadira@gmail.com', '123456', 'Cliente', 1),
+(189093952, 'evelin', '0986758493', 'Mall de los Andes', 'evelin@gmail.com', '1234567', 'Cliente', 1),
+(189093953, 'Juan', '0961839712', 'Ambato', 'juantoa.75@gmail.com', 'todo2020', 'Administrador', 1);
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`

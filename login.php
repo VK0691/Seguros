@@ -8,15 +8,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "SELECT * FROM usuarios WHERE correo = ?";
     $stmt = $conn->prepare($sql);
+<<<<<<< HEAD
     if (!$stmt) {
         die("Error en la consulta: " . $conn->error);
     }
 
+=======
+>>>>>>> ef77b7ae32ba5f6e19a06ebcfb37fb714aae0d40
     $stmt->bind_param("s", $correo);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
+<<<<<<< HEAD
         // Verifica la contraseña con password_verify
         if (password_verify($contrasena, $row['contrasena'])) {
 
@@ -50,6 +54,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             alert('Usuario no encontrado');
             window.location='index.html';
         </script>";
+=======
+        if ($row['contrasena'] === $contrasena) { // Si usas hash, reemplaza esta línea con password_verify
+            $_SESSION['usuario'] = $row['correo'];
+            echo "Login exitoso. Bienvenido, " . $row['correo'];
+            // header("Location: dashboard.php");
+        } else {
+            echo "Contraseña incorrecta";
+        }
+    } else {
+        echo "Usuario no encontrado";
+>>>>>>> ef77b7ae32ba5f6e19a06ebcfb37fb714aae0d40
     }
 
     $stmt->close();
