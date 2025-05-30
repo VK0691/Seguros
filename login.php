@@ -35,11 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['rol'] = $row['rol'];
 
                     if ($row['rol'] == 'Administrador') {
-                        header("Location: ../Administrador/adminpanel.php");
+                        header("Location: ../Seguros/Administrador/adminpanel.php");
                     } elseif ($row['rol'] == 'Cliente') {
-                        header("Location: ../Cliente/panel_cliente.php");
+                        header("Location: ../Seguros/Cliente/panel_cliente.php");
                     } elseif ($row['rol'] == 'Agente') {
-                        header("Location: ../Agente/panel_agente.php");
+                        header("Location: ../Seguros/Agente/panel_agente.php");
                     } else {
                         header("Location: login.php?error=rol_no_valido");
                     }
