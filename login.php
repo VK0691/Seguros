@@ -35,11 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['rol'] = $row['rol'];
 
                     if ($row['rol'] == 'Administrador') {
-                        header("Location: ../Administrador/adminpanel.php");
+                        header("Location: ../Seguros/Administrador/adminpanel.php");
                     } elseif ($row['rol'] == 'Cliente') {
-                        header("Location: ../Cliente/panel_cliente.php");
+                        header("Location: ../Seguros/Cliente/panel_cliente.php");
                     } elseif ($row['rol'] == 'Agente') {
-                        header("Location: ../Agente/panel_agente.php");
+                        header("Location: ../Seguros/Agente/panel_agente.php");
                     } else {
                         header("Location: login.php?error=rol_no_valido");
                     }
@@ -62,33 +62,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login - Seguro de Salud</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="estiloslogin.css">
 </head>
-<body>
-<div class="container">
-  <div class="left">
-    <img src="img/usuario.jpg" alt="Icono Usuario">
-  </div>
-  <div class="right">
-    <div class="form-box">
-      <h2>Seguro de Salud</h2>
+<body style="margin: 0; font-family: Arial, sans-serif;">
 
-      <form method="POST" action="login.php">
-        <input type="text" name="correo" placeholder="Correo o usuario" required>
-        <input id="contrasena" type="password" name="contrasena" maxlength="15" placeholder="Contraseña" required>
-        <small id="mensajeContrasena" style="color: red; display: none;">Permitido máximo 15 caracteres.</small>
+<div class="container-fluid vh-100 d-flex flex-column flex-lg-row p-0">
+  <!-- Lado Izquierdo -->
+<div class="text-center d-flex align-items-center justify-content-center col-lg-4 py-4" style="background-color: #062D49;">
+  <img src="img/usuario.jpg" alt="Icono Usuario" class="img-fluid" style="max-height: 300px;">
+</div>
 
-        <?php if ($error != '') {
-            echo '<p style="color:red; margin-top:10px;">' . htmlspecialchars($error) . '</p>';
+  <!-- Lado Derecho -->
+  <div class="col-lg-8 d-flex align-items-center justify-content-center p-4">
+    <div class="form-box p-4 shadow-lg bg-white rounded-4" style="max-width: 600px; width: 100%;">
+      <h2 class="text-center mb-4">Seguro de Salud</h2>
+
+      <form method="POST" action="login.php" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <input type="text" class="form-control" name="correo" placeholder="Correo o usuario" required>
+        </div>
+        <div class="mb-2">
+          <input id="contrasena" type="password" name="contrasena" maxlength="15" class="form-control" placeholder="Contraseña" required>
+        </div>
+        <small id="mensajeContrasena" class="text-danger" style="display: none;">Permitido máximo 15 caracteres.</small>
+
+        <?php if (!empty($error)) {
+          echo '<p class="text-danger mt-3">' . htmlspecialchars($error) . '</p>';
         } ?>
 
-        <button type="submit">Iniciar Sesión</button>
+        <div class="d-grid mt-3">
+          <button type="submit" class="btn btn-outline-dark rounded-pill fw-bold">Iniciar Sesión</button>
+        </div>
       </form>
-
     </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
 
 <script>
   const inputContrasenaLogin = document.getElementById('contrasena');
