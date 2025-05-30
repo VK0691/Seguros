@@ -1,0 +1,298 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  margin: 20px;
+  color: #222;
+}
+
+h1 {
+  font-weight: bold;
+  color: #222;
+}
+
+.container {
+  display: flex;
+  gap: 40px;
+  max-width: 900px;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-photo img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #7b0000;
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 26px;
+  text-align: center;
+}
+
+.user-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 160px;
+}
+
+.btn-square {
+  text-align: center;
+  padding: 12px 0;
+  background-color: #7b0000;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-square:hover {
+  background-color: #a83232;
+}
+
+.btn-logout {
+  background-color: #555;
+}
+
+.btn-logout:hover {
+  background-color: #333;
+}
+
+.right {
+  flex: 1.5;
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px 30px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  color: #550000;
+  position: relative;
+}
+
+.right h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #8b0000;
+}
+
+.detail {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.detail strong {
+  font-weight: 700;
+  color: #222;
+}
+
+/* Inputs inicialmente ocultos */
+.edit-mode input {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 17px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Botones guardar y cancelar */
+.btn-group-edit {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-group-edit button, .btn-group-edit .btn-cancel {
+  padding: 10px 25px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-group-edit button {
+  background-color: #7b0000;
+  color: white;
+}
+
+.btn-group-edit button:hover {
+  background-color: #a83232;
+}
+
+.btn-cancel {
+  background-color: #555;
+  color: white;
+  text-decoration: none;
+  line-height: 24px;
+  text-align: center;
+  display: inline-block;
+  border: none;
+}
+
+.btn-cancel:hover {
+  background-color: #333333;
+}
+
+.message {
+  margin-bottom: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.error {
+  color: #a83232;
+}
+
+.success {
+  color: #007a00;
+}
+.btn-gestion-clientes {
+  background-color: #007bff;/* Un color distinto, más oscuro */
+  margin-top: 10px;
+  padding: 10px 0;
+  font-size: 16px;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-gestion-clientes:hover {
+  background-color: #222;
+}
+/* estilo_agente.css */
+
+/* Reset y tipografía */
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  margin: 20px;
+  color: #222;
+}
+
+h1 {
+  color: #004080;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Etiquetas */
+label {
+  display: block;
+  font-weight: 700;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Inputs y select */
+input[type="text"],
+input[type="email"],
+select {
+  width: 300px;
+  padding: 8px 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Mensajes de error */
+.error {
+  color: #d93025;
+  margin-top: 15px;
+  font-weight: 700;
+}
+
+/* Botones */
+.btn-square {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  margin-top: 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.btn-square:hover {
+  background-color: #0056b3;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  margin-left: 15px;
+}
+
+.btn-cancel:hover {
+  background-color: #565e64;
+}
+.btn-regresar {
+  background-color: #6c757d; /* gris */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-regresar:hover {
+  background-color: #565e64;
+}
+
+#mensajeExito {
+  background-color: #d4edda; /* Fondo verde claro */
+  border: 1px solid #c3e6cb; /* Borde verde */
+  color: #155724; /* Texto verde oscuro */
+  padding: 12px 20px;
+  margin: 20px auto; /* Centrado horizontal */
+  width: fit-content; /* Ajusta el ancho al contenido */
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(21, 87, 36, 0.3);
+}
+.link-accion {
+  font-weight: normal;
+  user-select: none;
+}
+
+.link-accion:hover {
+  text-decoration: underline;
+  color: black;
+}
