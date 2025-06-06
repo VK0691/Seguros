@@ -2,6 +2,13 @@
 session_start();
 include '../conexion.php';
 require_once '../fpdf/fpdf.php';
+$sql_seguros = "SELECT id, nombre, precio, cobertura_maxima FROM seguros";
+$result_seguros = $conn->query($sql_seguros);
+
+$seguros = [];
+while ($row = $result_seguros->fetch_assoc()) {
+    $seguros[] = $row;
+}
 
 if (!isset($_SESSION['usuario'])) {
     header("Location: ../login.php");
@@ -72,13 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($estado_solicitud === null || $esta
     $numero_hijos = $_POST['num_hijos'] ?? 0;
     $datos_hijos = '';
     for ($i = 1; $i <= $numero_hijos; $i++) {
-        $nombre = $_POST["dep_nombre_$i"] ?? '';
-        $cedula_h = $_POST["dep_cedula_$i"] ?? '';
-        $lugar = $_POST["dep_lugar_$i"] ?? '';
-        $nacionalidad_h = $_POST["dep_nacionalidad_$i"] ?? '';
-        $edad = $_POST["dep_edad_$i"] ?? '';
-        $parentesco = $_POST["dep_parentesco_$i"] ?? '';
-        $sexo_h = $_POST["dep_sexo_$i"] ?? '';
+        $nombre = $POST["dep_nombre$i"] ?? '';
+        $cedula_h = $POST["dep_cedula$i"] ?? '';
+        $lugar = $POST["dep_lugar$i"] ?? '';
+        $nacionalidad_h = $POST["dep_nacionalidad$i"] ?? '';
+        $edad = $POST["dep_edad$i"] ?? '';
+        $parentesco = $POST["dep_parentesco$i"] ?? '';
+        $sexo_h = $POST["dep_sexo$i"] ?? '';
 
         if ($nombre && $cedula_h && $lugar && $nacionalidad_h && $edad && $parentesco && $sexo_h) {
             $datos_hijos .= "$nombre ($cedula_h, $lugar, $nacionalidad_h, $edad años, $parentesco, $sexo_h); ";
@@ -95,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($estado_solicitud === null || $esta
             foreach ($_FILES[$inputName]['name'] as $index => $nombre) {
                 $nombre_archivo = basename($nombre);
                 $tmp = $_FILES[$inputName]['tmp_name'][$index];
-                $ruta_destino = $destinoBase . time() . '_' . $index . '_' . $nombre_archivo;
+                $ruta_destino = $destinoBase . time() . '' . $index . '' . $nombre_archivo;
                 if (!is_dir(dirname($ruta_destino))) {
                     mkdir(dirname($ruta_destino), 0777, true);
                 }
@@ -376,14 +383,27 @@ $stmt_insert->close();
                     <label>Alergias conocidas</label>
                     <textarea name="alergias" class="form-control" required></textarea>
                 </div>
-                <div class="col-md-6">
-                    <label>Tipo de seguro</label>
-                    <select name="tipo_seguro" id="tipo_seguro" class="form-select" required>
-                        <option value="">Seleccione</option>
-                        <option value="Salud Personal">Salud Personal</option>
-                        <option value="Salud Familiar">Salud Familiar</option>
-                    </select>
-                </div>
+                <div class="mb-3">
+    <label for="seguro_id" class="form-label">Seleccionar Seguro</label>
+    <select class="form-select" id="seguro_id" name="seguro_id" required onchange="mostrarDetallesSeguro()">
+        <option value="">Seleccione un seguro</option>
+        <?php foreach ($seguros as $seg): ?>
+            <option value="<?= $seg['id'] ?>"
+                    data-nombre="<?= htmlspecialchars($seg['nombre']) ?>"
+                    data-precio="<?= htmlspecialchars($seg['precio']) ?>"
+                    data-cobertura="<?= htmlspecialchars($seg['cobertura_maxima']) ?>">
+                <?= htmlspecialchars($seg['nombre']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
+<div id="detalles_seguro" style="display:none;" class="bg-light border p-3 rounded">
+    <p><strong>Nombre:</strong> <span id="nombre_seguro"></span></p>
+    <p><strong>Precio:</strong> $<span id="precio_seguro"></span></p>
+    <p><strong>Cobertura Máxima:</strong> <span id="cobertura_seguro"></span></p>
+</div>
+
 
 <div class="col-12" id="campo_num_hijos" style="display:none">
                     <label>Dependientes</label>
@@ -520,6 +540,21 @@ document.querySelector("form").addEventListener("submit", function(e) {
     }
 });
 </script>
+<script>
+function mostrarDetallesSeguro() {
+    const select = document.getElementById('seguro_id');
+    const option = select.options[select.selectedIndex];
+    if (option.value !== "") {
+        document.getElementById('detalles_seguro').style.display = 'block';
+        document.getElementById('nombre_seguro').innerText = option.getAttribute('data-nombre');
+        document.getElementById('precio_seguro').innerText = option.getAttribute('data-precio');
+        document.getElementById('cobertura_seguro').innerText = option.getAttribute('data-cobertura');
+    } else {
+        document.getElementById('detalles_seguro').style.display = 'none';
+    }
+}
+</script>
+
 
 
 </body>
