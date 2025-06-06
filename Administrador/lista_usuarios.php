@@ -1,8 +1,17 @@
 <?php
-
 error_reporting(0);
 ini_set('display_errors', 0);
 session_start();
+
+if (!isset($_SESSION['session_regenerada'])) {
+    session_regenerate_id(true);
+    $_SESSION['session_regenerada'] = true;
+}
+
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['rol'])) {
+    header("Location: ../login.php");
+    exit();
+}
 
 include '../conexion.php';
 
@@ -10,43 +19,160 @@ $resultado = $conn->query("SELECT * FROM usuarios");
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Usuarios</title>
-      <link rel="stylesheet" href="estiloadmin.css" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <style>
+        body {
+            background: linear-gradient(to right,rgb(135, 154, 175), #ffffff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #000;
+        }
+
+        h2 {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #002147;
+        }
+
+        .botones-acciones a {
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 30px;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-solicitudes {
+            background-color: #FFD700;
+            color: #000;
+        }
+
+        .btn-solicitudes:hover {
+            background-color: #e6c200;
+        }
+
+        .btn-regresar {
+            background-color: #002147;
+            color: #fff;
+        }
+
+        .btn-regresar:hover {
+            background-color: #00112a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #002147;
+            color: #FFD700;
+        }
+
+        td {
+            background-color: #f1f1f1;
+        }
+
+        td button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        td button:hover {
+            background-color: #c82333;
+        }
+
+        #modal-eliminar {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: fadeInModal 0.4s ease-in-out;
+        }
+
+        #modal-eliminar button {
+            margin: 10px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #modal-eliminar #confirmar-eliminar {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        #modal-eliminar button:hover {
+            opacity: 0.9;
+        }
+
         .mensaje-exito {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             background-color: #4CAF50;
             color: white;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            text-align: center;
-            width: 50%;
-            margin: 10px auto;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-size: 18px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; top: 0; }
+            to { opacity: 1; top: 20px; }
         }
     </style>
-    <script>
-        window.onload = function() {
-            const mensaje = document.getElementById('mensaje-exito');
-            if (mensaje) {
-                setTimeout(() => {
-                    mensaje.style.display = 'none';
-                }, 3000);
-            }
-        }
-    </script>
 </head>
-
 <body>
     <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'eliminado'): ?>
-    <div id="mensaje-exito" class="mensaje-exito">
-        ✅ Usuario eliminado correctamente.
-    </div>
-<?php endif; ?>
-
-    <h2>Lista de Usuarios</h2>
+        <div id="mensaje-exito" class="mensaje-exito">
+            ✅ Usuario eliminado correctamente.
+        </div>
+    <?php endif; ?>
 
     <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'actualizado'): ?>
         <div id="mensaje-exito" class="mensaje-exito">
@@ -54,88 +180,85 @@ $resultado = $conn->query("SELECT * FROM usuarios");
         </div>
     <?php endif; ?>
 
-    <table border="1" width="100%">
-        <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Teléfono</th>
-                <th>Dirección</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($fila = $resultado->fetch_assoc()): ?>
+    <div class="container px-4">
+        <h2>
+            Lista de Usuarios
+            <div class="botones-acciones">
+                <a href="../Agente/listaforms.php" class="btn-solicitudes">Ver Solicitudes</a>
+                <a href="../Administrador/adminpanel.php" class="btn-regresar">Regresar</a>
+            </div>
+        </h2>
+
+        <table>
+            <thead>
                 <tr>
-                    <td><?php echo htmlspecialchars($fila['usuario']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['telefono']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['direccion']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['correo']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['rol']); ?></td>
-                    <td><?php echo $fila['estado'] ? 'Activo' : 'Inactivo'; ?></td>
-                    <td>
-                        <a href="editar_usuario.php?id=<?php echo $fila['id']; ?>">Editar</a>
-                        <button onclick="mostrarModal(<?php echo $fila['id']; ?>)">Eliminar</button>
-
-                    </td>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
-    <div id="modal-eliminar" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%, -50%); background:#fff; border:1px solid #ccc; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.3); z-index:9999;">
-    <p>¿Estás seguro de que quieres eliminar este usuario?</p>
-    <button id="confirmar-eliminar">Sí, eliminar</button>
-    <button onclick="cerrarModal()">Cancelar</button>
-</div>
-<script>
-    let idUsuarioEliminar = null;
+            </thead>
+            <tbody>
+                <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($fila['usuario']) ?></td>
+                        <td><?= htmlspecialchars($fila['telefono']) ?></td>
+                        <td><?= htmlspecialchars($fila['direccion']) ?></td>
+                        <td><?= htmlspecialchars($fila['correo']) ?></td>
+                        <td><?= htmlspecialchars($fila['rol']) ?></td>
+                        <td><?= $fila['estado'] ? 'Activo' : 'Inactivo' ?></td>
+                        <td>
+                            <a href="editar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-warning btn-sm">Editar</a>
+                            <button onclick="mostrarModal(<?= $fila['id'] ?>)">Eliminar</button>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
 
-    function mostrarModal(id) {
-        idUsuarioEliminar = id;
-        document.getElementById('modal-eliminar').style.display = 'block';
-    }
+    <div id="modal-eliminar">
+        <p>¿Estás seguro de que quieres eliminar este usuario?</p>
+        <button id="confirmar-eliminar">Sí, eliminar</button>
+        <button onclick="cerrarModal()">Cancelar</button>
+    </div>
 
-    function cerrarModal() {
-        document.getElementById('modal-eliminar').style.display = 'none';
-        idUsuarioEliminar = null;
-    }
-
-    document.getElementById('confirmar-eliminar').addEventListener('click', function () {
-        if (idUsuarioEliminar !== null) {
-            window.location.href = "eliminar_usuario.php?id=" + idUsuarioEliminar;
+    <script>
+        window.onload = function() {
+            const mensaje = document.getElementById('mensaje-exito');
+            if (mensaje) {
+                setTimeout(() => {
+                    mensaje.style.opacity = '0';
+                    setTimeout(() => mensaje.style.display = 'none', 500);
+                }, 3000);
+            }
         }
-    });
-</script>
-<style>
-    .mensaje-exito {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #4CAF50; /* verde */
-        color: white;
-        padding: 15px 30px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        z-index: 10000;
-        font-size: 18px;
-        text-align: center;
-    }
-</style>
 
-<script>
-    setTimeout(function () {
-        const mensaje = document.getElementById('mensaje-exito');
-        if (mensaje) {
-            mensaje.style.display = 'none';
+        let idUsuarioEliminar = null;
+
+        function mostrarModal(id) {
+            idUsuarioEliminar = id;
+            document.getElementById('modal-eliminar').style.display = 'block';
         }
-    }, 3000);
-</script>
 
+        function cerrarModal() {
+            document.getElementById('modal-eliminar').style.display = 'none';
+            idUsuarioEliminar = null;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnConfirmar = document.getElementById('confirmar-eliminar');
+            if (btnConfirmar) {
+                btnConfirmar.addEventListener('click', function () {
+                    if (idUsuarioEliminar !== null) {
+                        window.location.href = "eliminar_usuario.php?id=" + idUsuarioEliminar;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
-
 </html>
-<!-- Al principio o al final de la página lista_usuarios.php -->
-<a href="../Administrador/adminpanel.php" style="display:inline-block; margin:10px 0; padding:8px 15px; background-color:#007BFF; color:#fff; text-decoration:none; border-radius:4px;">Regresar</a>

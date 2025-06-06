@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if ($row['rol'] == 'Administrador') {
                         header("Location: ../Seguros/Administrador/adminpanel.php");
                     } elseif ($row['rol'] == 'Cliente') {
-                        header("Location: ../Seguros/Cliente/panel_cliente.php");
+                        header("Location: ../Seguros/Cliente/clientedash.php");
                     } elseif ($row['rol'] == 'Agente') {
                         header("Location: ../Seguros/Agente/panel_agente.php");
                     } else {

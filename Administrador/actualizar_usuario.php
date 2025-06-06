@@ -1,5 +1,19 @@
 <?php
 session_start();
+
+
+// Regenerar ID de sesión para evitar fijación de sesión (session fixation)
+if (!isset($_SESSION['session_regenerada'])) {
+    session_regenerate_id(true);
+    $_SESSION['session_regenerada'] = true;
+}
+
+// Validar que haya sesión activa
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['rol'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'Administrador') {
     header("Location: ../index.html");
     exit();

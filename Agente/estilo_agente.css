@@ -1,69 +1,78 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  margin: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #002147 50%, #ffffff 50%);
+  margin: 0;
   color: #222;
+  padding: 20px;
+  animation: fadeIn 1s ease-in-out;
 }
 
 h1 {
-  font-weight: bold;
-  color: #222;
+  color: #002147;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 10px;
 }
 
 .container {
   display: flex;
-  gap: 40px;
-  max-width: 900px;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 30px;
 }
 
 .left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  background-color: #002147;
+  color: white;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+  width: 280px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  animation: slideInLeft 0.7s ease;
 }
 
 .user-photo img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 4px solid #7b0000;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #FFD700;
 }
 
 .user-name {
-  font-weight: bold;
-  font-size: 26px;
-  text-align: center;
+  font-size: 1.2rem;
+  margin: 15px 0;
 }
 
 .user-buttons {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  width: 160px;
+  gap: 12px;
 }
 
 .btn-square {
-  text-align: center;
-  padding: 12px 0;
-  background-color: #7b0000;
-  color: white;
+  padding: 10px;
   font-weight: bold;
-  text-decoration: none;
-  border-radius: 8px;
-  cursor: pointer;
+  background-color: #FFD700;
+  color: #002147;
   border: none;
-  transition: background-color 0.3s ease;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .btn-square:hover {
-  background-color: #a83232;
+  background-color: #000;
+  color: #FFD700;
+  transform: scale(1.05);
 }
 
 .btn-logout {
-  background-color: #555;
+  background-color: #000;
+  color: white;
 }
 
 .btn-logout:hover {
@@ -71,228 +80,109 @@ h1 {
 }
 
 .right {
-  flex: 1.5;
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 20px 30px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-  color: #550000;
-  position: relative;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  width: 480px;
+  animation: slideInRight 0.7s ease;
 }
 
 .right h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-weight: 700;
-  color: #8b0000;
-}
-
-.detail {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.detail strong {
-  font-weight: 700;
-  color: #222;
-}
-
-/* Inputs inicialmente ocultos */
-.edit-mode input {
-  width: 100%;
-  padding: 6px 8px;
-  font-size: 17px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* Botones guardar y cancelar */
-.btn-group-edit {
-  margin-top: 20px;
-  display: flex;
-  gap: 15px;
-}
-
-.btn-group-edit button, .btn-group-edit .btn-cancel {
-  padding: 10px 25px;
-  font-weight: bold;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.btn-group-edit button {
-  background-color: #7b0000;
-  color: white;
-}
-
-.btn-group-edit button:hover {
-  background-color: #a83232;
-}
-
-.btn-cancel {
-  background-color: #555;
-  color: white;
-  text-decoration: none;
-  line-height: 24px;
-  text-align: center;
-  display: inline-block;
-  border: none;
-}
-
-.btn-cancel:hover {
-  background-color: #333333;
-}
-
-.message {
-  margin-bottom: 15px;
-  font-weight: 700;
-  text-align: center;
-}
-
-.error {
-  color: #a83232;
-}
-
-.success {
-  color: #007a00;
-}
-.btn-gestion-clientes {
-  background-color: #007bff;/* Un color distinto, más oscuro */
-  margin-top: 10px;
-  padding: 10px 0;
-  font-size: 16px;
-  border-radius: 8px;
-  text-align: center;
-  color: white;
-  font-weight: bold;
-  text-decoration: none;
-  display: block;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-gestion-clientes:hover {
-  background-color: #222;
-}
-/* estilo_agente.css */
-
-/* Reset y tipografía */
-body {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  margin: 20px;
-  color: #222;
-}
-
-h1 {
-  color: #004080;
-  font-weight: 700;
+  color: #002147;
   margin-bottom: 20px;
 }
 
-/* Etiquetas */
-label {
-  display: block;
-  font-weight: 700;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  color: #333;
+.detail {
+  margin-bottom: 12px;
+  font-size: 16px;
 }
 
-/* Inputs y select */
-input[type="text"],
-input[type="email"],
-select {
-  width: 300px;
-  padding: 8px 10px;
+.detail strong {
+  color: #002147;
+}
+
+.edit-mode input[type="text"],
+.edit-mode input[type="email"],
+.edit-mode input[type="tel"] {
+  width: 100%;
+  padding: 8px;
   font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
-  transition: border-color 0.3s ease;
+  margin-bottom: 12px;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-select:focus {
-  border-color: #007bff;
-  outline: none;
+.btn-group-edit {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
-/* Mensajes de error */
-.error {
-  color: #d93025;
-  margin-top: 15px;
-  font-weight: 700;
-}
-
-/* Botones */
-.btn-square {
-  background-color: #007bff;
-  color: white;
+.btn-group-edit button {
+  padding: 10px 16px;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
   border: none;
-  padding: 12px 28px;
-  margin-top: 25px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  text-align: center;
-  display: inline-block;
-  text-decoration: none;
+  font-weight: 600;
 }
 
-.btn-square:hover {
-  background-color: #0056b3;
+.btn-group-edit button[type="submit"] {
+  background-color: #002147;
+  color: #fff;
 }
 
-.btn-cancel {
+.btn-group-edit .btn-cancel {
   background-color: #6c757d;
-  margin-left: 15px;
+  color: #fff;
 }
 
+.btn-group-edit button:hover,
 .btn-cancel:hover {
-  background-color: #565e64;
-}
-.btn-regresar {
-  background-color: #6c757d; /* gris */
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
-  display: inline-block;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  opacity: 0.9;
 }
 
-.btn-regresar:hover {
-  background-color: #565e64;
-}
-
-#mensajeExito {
-  background-color: #d4edda; /* Fondo verde claro */
-  border: 1px solid #c3e6cb; /* Borde verde */
-  color: #155724; /* Texto verde oscuro */
-  padding: 12px 20px;
-  margin: 20px auto; /* Centrado horizontal */
-  width: fit-content; /* Ajusta el ancho al contenido */
-  border-radius: 8px;
-  font-weight: bold;
+.message {
   text-align: center;
-  box-shadow: 0 2px 6px rgba(21, 87, 36, 0.3);
-}
-.link-accion {
-  font-weight: normal;
-  user-select: none;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 8px;
 }
 
-.link-accion:hover {
-  text-decoration: underline;
-  color: black;
+.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .right, .left {
+    width: 95%;
+  }
 }

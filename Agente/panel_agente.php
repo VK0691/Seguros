@@ -1,8 +1,19 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['session_regenerada'])) {
+    session_regenerate_id(true);
+    $_SESSION['session_regenerada'] = true;
+}
+
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['rol'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 include '../conexion.php';
 
-if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'Agente') {
+if ($_SESSION['rol'] != 'Agente') {
     header("Location: ../login.php");
     exit();
 }
@@ -11,7 +22,6 @@ $correoSesion = $_SESSION['usuario'];
 $error = '';
 $success = '';
 
-// Manejo de actualización vía POST
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'guardar') {
     $nuevoUsuario = trim($_POST['usuario']);
     $nuevoCorreo = trim($_POST['correo']);
@@ -28,9 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
         $stmt_update->bind_param("sssss", $nuevoUsuario, $nuevoCorreo, $nuevaDireccion, $nuevoTelefono, $correoSesion);
 
         if ($stmt_update->execute()) {
-            $_SESSION['usuario'] = $nuevoCorreo; // actualizar sesión si cambia correo
+            $_SESSION['usuario'] = $nuevoCorreo;
             $success = "Datos actualizados correctamente.";
-            $correoSesion = $nuevoCorreo; // para recargar datos
+            $correoSesion = $nuevoCorreo;
         } else {
             $error = "Error al actualizar: " . $stmt_update->error;
         }
@@ -38,7 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     }
 }
 
-// Obtener datos actuales para mostrar
 $sql = "SELECT id, usuario, correo, direccion, telefono FROM usuarios WHERE correo = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $correoSesion);
@@ -66,11 +75,14 @@ $conn->close();
 <head>
   <meta charset="UTF-8" />
   <title>Panel Agente</title>
-  <link rel="stylesheet" href="estilo_agente.css" />
+  <!-- Forzar recarga del CSS -->
+  <link rel="stylesheet" href="estilo_agente.css?v=<?= time(); ?>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-<h1>Bienvenido, <?= htmlspecialchars($usuario) ?></h1>
+<h1 style="color: black;">Bienvenido, <?= htmlspecialchars($usuario) ?></h1>
+
 
 <div class="container">
   <div class="left">
@@ -83,10 +95,9 @@ $conn->close();
     <div class="user-buttons">
       <button id="btnEditar" class="btn-square">Editar perfil</button>
       <a href="logout.php" class="btn-square btn-logout">Cerrar sesión</a>
-       <!-- Cajoncito Gestionar Clientes -->
-  <a href="clientes_listado.php" class="btn-square btn-gestion-clientes">Gestionar clientes</a>
-</div>
-    
+      <a href="clientes_listado.php" class="btn-square btn-gestion-clientes">Gestionar clientes</a>
+      <a href="listaforms.php" class="btn-square btn-solicitudes">Revisar Solicitudes</a>
+    </div>
   </div>
 
   <div class="right" id="rightPanel">
@@ -135,7 +146,6 @@ $conn->close();
       <div class="detail"><strong>Dirección:</strong> <?= htmlspecialchars($direccion) ?></div>
       <div class="detail"><strong>Teléfono:</strong> <?= htmlspecialchars($telefono) ?></div>
     </div>
-
   </div>
 </div>
 
@@ -156,9 +166,7 @@ $conn->close();
     datosMostrar.style.display = 'block';
     btnEditar.style.display = 'inline-block';
   });
-</script>
 
-<script>
   window.addEventListener('DOMContentLoaded', () => {
     const mensaje = document.getElementById('mensajeExito');
     if (mensaje) {
@@ -170,6 +178,5 @@ $conn->close();
     }
   });
 </script>
-
 </body>
 </html>

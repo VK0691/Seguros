@@ -1,7 +1,17 @@
 <?php
-error_reporting(0); // Oculta los errores
+error_reporting(0);
 ini_set('display_errors', 0);
 session_start();
+
+if (!isset($_SESSION['session_regenerada'])) {
+    session_regenerate_id(true);
+    $_SESSION['session_regenerada'] = true;
+}
+
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['rol'])) {
+    header("Location: ../login.php");
+    exit();
+}
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'Administrador') {
     header("Location: ../index.html");
@@ -13,7 +23,6 @@ if ($conexion->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Crear usuario (procesar formulario)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_usuario'])) {
     $usuario    = $conexion->real_escape_string($_POST['usuario']);
     $telefono   = $conexion->real_escape_string($_POST['telefono']);
@@ -40,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_usuario'])) {
     }
 }
 
-// Obtener usuarios para listar
 $resultado = $conexion->query("SELECT * FROM usuarios");
 ?>
 
@@ -49,36 +57,106 @@ $resultado = $conexion->query("SELECT * FROM usuarios");
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Panel de Administrador - Seguro de Salud</title>
-  <link rel="stylesheet" href="estiloadmin.css" />
+  <title>Panel de Administrador</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right,rgb(53, 56, 125),rgb(27, 75, 131));
+      color: #fff;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #FFD700;
+      text-align: center;
+    }
+    form {
+      max-width: 500px;
+      margin: 20px auto;
+      background-color: #fff;
+      color: #000;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    input, select {
+      width: 100%;
+      padding: 6px;
+      margin: 10px 0;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #002147;
+      color: #FFD700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #000;
+    }
+    a button {
+      background-color: #FFD700;
+      color: #000;
+      font-weight: bold;
+    }
+    a button:hover {
+      background-color: #000;
+      color: #FFD700;
+    }
+    #modalInfo, #modalError {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 20px;
+      border-radius: 8px;
+      z-index: 999;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    #modalInfo {
+      background-color: #28a745;
+      color: #fff;
+    }
+    #modalError {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    @media (max-width: 600px) {
+      form, h1, h2 {
+        font-size: 90%;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <?php if (isset($_GET['success']) && $_GET['success'] === 'creado'): ?>
-  <div id="modalInfo" style="position:fixed;top:20px;left:50%;transform:translateX(-50%);
-      background:#4CAF50;color:white;padding:15px;border-radius:8px;z-index:999;">
+  <div id="modalInfo">
     ✅ Usuario creado correctamente.
-    <button onclick="document.getElementById('modalInfo').style.display='none'" 
-      style="margin-left:10px;background:transparent;color:white;border:none;font-weight:bold;">X</button>
+    <button onclick="document.getElementById('modalInfo').style.display='none'">X</button>
   </div>
 <?php endif; ?>
 
 <?php if (isset($_GET['error']) && $_GET['error'] === 'usuario_existe'): ?>
-  <div id="modalError" style="position:fixed;top:20px;left:50%;transform:translateX(-50%);
-      background:#f44336;color:white;padding:15px;border-radius:8px;z-index:999;">
+  <div id="modalError">
     ⚠️ El usuario o correo ya existe.
-    <button onclick="document.getElementById('modalError').style.display='none'" 
-      style="margin-left:10px;background:transparent;color:white;border:none;font-weight:bold;">X</button>
+    <button onclick="document.getElementById('modalError').style.display='none'">X</button>
   </div>
 <?php endif; ?>
 
-<h1>Bienvenido al Panel de Administrador</h1>
-<p>Usuario: <?php echo htmlspecialchars($_SESSION['usuario']); ?></p>
-<p><a href="logout.php">Cerrar sesión</a></p>
+<h1>Panel de Administrador</h1>
+<p style="text-align:center;">Usuario: <?= htmlspecialchars($_SESSION['usuario']) ?></p>
+<p style="text-align:center;"><a href="logout.php"><button>Cerrar sesión</button></a></p>
 
 <h2>Crear nuevo usuario</h2>
 <form method="POST" action="adminpanel.php">
-    <input type="text" name="usuario" placeholder="Usuario" required>
+    <input type="text" name="usuario" placeholder="Nombre" required>
     <input type="text" name="telefono" placeholder="Teléfono" required>
     <input type="text" name="direccion" placeholder="Dirección" required>
     <input type="email" name="correo" placeholder="Correo" required>
@@ -95,10 +173,11 @@ $resultado = $conexion->query("SELECT * FROM usuarios");
     <button type="submit" name="crear_usuario">Crear Usuario</button>
 </form>
 
-<!-- Enlace para ir a la lista de usuarios -->
-<a href="lista_usuarios.php">
-    <button style="margin-top: 20px;">Mostrar lista de usuarios</button>
-</a>
+<div style="text-align:center">
+  <a href="lista_usuarios.php">
+      <button>Mostrar lista de usuarios</button>
+  </a>
+</div>
 
 </body>
 </html>
