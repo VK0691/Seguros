@@ -91,6 +91,7 @@ $seguros = $conn->query("SELECT t.*, c.periodo_pago, c.monto_base, c.formula_pri
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Seguros</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -227,6 +228,7 @@ $seguros = $conn->query("SELECT t.*, c.periodo_pago, c.monto_base, c.formula_pri
                                             <span class="input-group-text">$</span>
                                             <input type="number" step="0.01" min="0" name="monto_base" id="monto_base_nuevo" class="form-control factor-input" required>
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -299,6 +301,11 @@ $seguros = $conn->query("SELECT t.*, c.periodo_pago, c.monto_base, c.formula_pri
                             <button type="submit" class="btn btn-success w-100">
                                 <i class="fas fa-save me-2"></i>Guardar Seguro
                             </button>
+                            <div>     
+                                    <a href="../Administrador/adminpanel.php" class="btn-regresar">Regresar</a>
+           
+                            </div>
+                            
                         </form>
                     </div>
                 </div>

@@ -2,7 +2,13 @@
 session_start();
 include '../conexion.php';
 require_once '../fpdf/fpdf.php';
-$sql_seguros = "SELECT id, nombre, precio, cobertura_maxima FROM seguros";
+
+// Modificamos la consulta para obtener los seguros desde la tabla tipos_seguro
+$sql_seguros = "SELECT t.id, t.nombre, c.monto_base as precio, 
+                CONCAT('$', FORMAT(c.monto_base, 2), ' - ', t.coberturas) as cobertura_maxima 
+                FROM tipos_seguro t 
+                JOIN configuraciones_seguro c ON t.id = c.tipo_seguro_id 
+                WHERE t.estado = 1";
 $result_seguros = $conn->query($sql_seguros);
 
 $seguros = [];
@@ -50,7 +56,7 @@ if ($result_validar->num_rows > 0) {
 $stmt_validar->close();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($estado_solicitud === null || $estado_solicitud === 'Rechazado')) {
-    $required = ['cedula', 'tipo_identificacion', 'lugar_nacimiento', 'nacionalidad', 'sexo', 'fecha_nacimiento', 'ocupacion', 'fumador', 'peso', 'altura', 'enfermedades', 'alergias', 'tipo_seguro', 'estado_civil', 'tipo_sangre', 'forma_pago'];
+    $required = ['cedula', 'tipo_identificacion', 'lugar_nacimiento', 'nacionalidad', 'sexo', 'fecha_nacimiento', 'ocupacion', 'fumador', 'peso', 'altura', 'enfermedades', 'alergias', 'seguro_id', 'estado_civil', 'tipo_sangre', 'forma_pago'];
     foreach ($required as $campo) {
         if (empty($_POST[$campo])) {
             $mensaje = "<div class='alert alert-danger'>El campo <strong>{$campo}</strong> no puede estar vacío.</div>";
@@ -71,21 +77,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($estado_solicitud === null || $esta
     $altura = $_POST['altura'];
     $enfermedades = $_POST['enfermedades'];
     $alergias = $_POST['alergias'];
-    $tipo_seguro = $_POST['tipo_seguro'];
+    $seguro_id = $_POST['seguro_id']; // Cambiamos tipo_seguro por seguro_id
     $estado_civil = $_POST['estado_civil'];
     $tipo_sangre = $_POST['tipo_sangre'];
     $forma_pago = $_POST['forma_pago'];
 
+    // Obtener información del seguro seleccionado
+    $sql_seguro_info = "SELECT t.nombre, c.monto_base 
+                        FROM tipos_seguro t 
+                        JOIN configuraciones_seguro c ON t.id = c.tipo_seguro_id 
+                        WHERE t.id = ?";
+    $stmt_seguro = $conn->prepare($sql_seguro_info);
+    $stmt_seguro->bind_param("i", $seguro_id);
+    $stmt_seguro->execute();
+    $result_seguro = $stmt_seguro->get_result();
+    $seguro_info = $result_seguro->fetch_assoc();
+    $tipo_seguro = $seguro_info['nombre'];
+    $monto_seguro = $seguro_info['monto_base'];
+    $stmt_seguro->close();
+
     $numero_hijos = $_POST['num_hijos'] ?? 0;
     $datos_hijos = '';
     for ($i = 1; $i <= $numero_hijos; $i++) {
-        $nombre = $POST["dep_nombre$i"] ?? '';
-        $cedula_h = $POST["dep_cedula$i"] ?? '';
-        $lugar = $POST["dep_lugar$i"] ?? '';
-        $nacionalidad_h = $POST["dep_nacionalidad$i"] ?? '';
-        $edad = $POST["dep_edad$i"] ?? '';
-        $parentesco = $POST["dep_parentesco$i"] ?? '';
-        $sexo_h = $POST["dep_sexo$i"] ?? '';
+        $nombre = $_POST["dep_nombre_$i"] ?? '';
+        $cedula_h = $_POST["dep_cedula_$i"] ?? '';
+        $lugar = $_POST["dep_lugar_$i"] ?? '';
+        $nacionalidad_h = $_POST["dep_nacionalidad_$i"] ?? '';
+        $edad = $_POST["dep_edad_$i"] ?? '';
+        $parentesco = $_POST["dep_parentesco_$i"] ?? '';
+        $sexo_h = $_POST["dep_sexo_$i"] ?? '';
 
         if ($nombre && $cedula_h && $lugar && $nacionalidad_h && $edad && $parentesco && $sexo_h) {
             $datos_hijos .= "$nombre ($cedula_h, $lugar, $nacionalidad_h, $edad años, $parentesco, $sexo_h); ";
@@ -139,17 +159,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($estado_solicitud === null || $esta
         fecha_nacimiento, ocupacion, fumador, peso, altura,
         enfermedades_previas, alergias, firma, estado,
         tipo_seguro, estado_civil, nombre_conyuge, cedula_conyuge,
-        numero_hijos, datos_hijos, tipo_sangre, forma_pago, cedula_escan_nombre, documentos_adicionales_nombre
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        numero_hijos, datos_hijos, tipo_sangre, forma_pago, cedula_escan_nombre, documentos_adicionales_nombre,
+        seguro_id, monto_seguro
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     $stmt_insert->bind_param(
-        "issssssssssssssssssssssssssss",
+        "issssssssssssssssssssssssssssis",
         $usuario['id'], $usuario['usuario'], $cedula, $tipo_identificacion, $lugar_nacimiento, $nacionalidad, $sexo,
         $usuario['telefono'], $usuario['correo'], $usuario['direccion'],
         $fecha_nacimiento, $ocupacion, $fumador, $peso, $altura,
         $enfermedades, $alergias, $firma_data, $estado,
         $tipo_seguro, $estado_civil, $nombre_conyuge, $cedula_conyuge,
-        $numero_hijos, $datos_hijos, $tipo_sangre, $forma_pago, $cedula_nombre, $docs_adicionales_nombre
+        $numero_hijos, $datos_hijos, $tipo_sangre, $forma_pago, $cedula_nombre, $docs_adicionales_nombre,
+        $seguro_id, $monto_seguro
     );
 
     if ($stmt_insert->execute()) {
@@ -178,6 +200,7 @@ Altura: {$altura}
 Enfermedades: {$enfermedades}
 Alergias: {$alergias}
 Tipo de seguro: {$tipo_seguro}
+Monto del seguro: \${$monto_seguro}
 Estado civil: {$estado_civil}
 Cónyuge: {$nombre_conyuge} ({$cedula_conyuge})
 Hijos: {$datos_hijos}
@@ -236,6 +259,30 @@ $stmt_insert->close();
             border-radius: 15px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
+        .seguro-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        .seguro-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .seguro-card.selected {
+            border-color: #0d6efd;
+            background-color: #f0f7ff;
+        }
+        .seguro-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .seguro-price {
+            font-weight: bold;
+            color: #198754;
+        }
     </style>
 </head>
 <body>
@@ -269,44 +316,44 @@ $stmt_insert->close();
                 </div>
 
                 <!-- Datos del formulario -->
-                 <div class="col-md-6">
-    <label>Tipo de identificación</label>
-    <select name="tipo_identificacion" class="form-select" required>
-        <option value="">Seleccione</option>
-        <option value="Cédula">Cédula</option>
-        <option value="Pasaporte">Pasaporte</option>
-    </select>
-</div>
+                <div class="col-md-6">
+                    <label>Tipo de identificación</label>
+                    <select name="tipo_identificacion" class="form-select" required>
+                        <option value="">Seleccione</option>
+                        <option value="Cédula">Cédula</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                    </select>
+                </div>
 
-<div class="col-md-6">
+                <div class="col-md-6">
                     <label>Nro. Identificación</label>
                     <input type="text" name="cedula" class="form-control" required maxlength="10" pattern="\d{10}">
                 </div>
                 <div class="col-md-6">
-    <label>Documentos escaneados</label>
-    <input type="file" name="cedula_escan[]" class="form-control" accept=".pdf,.jpg,.png" multiple>
-</div>
-<div class="col-md-6">
-    <label>Sexo</label>
-    <select name="sexo" class="form-select" required>
-        <option value="">Seleccione</option>
-        <option value="Masculino">Masculino</option>
-        <option value="Femenino">Femenino</option>
-    </select>
-</div>
-<div class="col-md-6">
-    <label>Lugar de nacimiento</label>
-    <input type="text" name="lugar_nacimiento" class="form-control" required>
-</div>
-<div class="col-md-6">
-    <label>Nacionalidad</label>
-    <input type="text" name="nacionalidad" class="form-control" required>
-</div>
+                    <label>Documentos escaneados</label>
+                    <input type="file" name="cedula_escan[]" class="form-control" accept=".pdf,.jpg,.png" multiple>
+                </div>
+                <div class="col-md-6">
+                    <label>Sexo</label>
+                    <select name="sexo" class="form-select" required>
+                        <option value="">Seleccione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Lugar de nacimiento</label>
+                    <input type="text" name="lugar_nacimiento" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Nacionalidad</label>
+                    <input type="text" name="nacionalidad" class="form-control" required>
+                </div>
                 <div class="col-md-6">
                     <label>Fecha de Nacimiento</label>
                     <input type="date" name="fecha_nacimiento" class="form-control" required>
                 </div>
-                               <div class="col-md-6">
+                <div class="col-md-6">
                     <label>Estado civil</label>
                     <select name="estado_civil" id="estado_civil" class="form-select" required>
                         <option value="">Seleccione</option>
@@ -342,39 +389,36 @@ $stmt_insert->close();
                     <input type="number" name="peso" class="form-control" min="30" max="250" required>
                 </div>
 
-<div class="col-md-6">
+                <div class="col-md-6">
                     <label>Altura (cm)</label>
                     <input type="number" name="altura" class="form-control" min="100" max="250" required>
                 </div>
 
                 <div class="col-md-6">
-    <label>Tipo de sangre</label>
-    <select name="tipo_sangre" class="form-select" required>
-        <option value="">Seleccione</option>
-        <option value="A+">A+</option>
-        <option value="A-">A-</option>
-        <option value="B+">B+</option>
-        <option value="B-">B-</option>
-        <option value="AB+">AB+</option>
-        <option value="AB-">AB-</option>
-        <option value="O+">O+</option>
-        <option value="O-">O-</option>
-    </select>
-</div>
+                    <label>Tipo de sangre</label>
+                    <select name="tipo_sangre" class="form-select" required>
+                        <option value="">Seleccione</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
 
-<div class="col-md-6">
-    <label>Forma de pago</label>
-    <select name="forma_pago" class="form-select" required>
-        <option value="">Seleccione</option>
-        <option value="Efectivo">Efectivo</option>
-        <option value="Tarjeta">Tarjeta</option>
-        <option value="Transferencia">Transferencia</option>
-    </select>
-</div>
+                <div class="col-md-6">
+                    <label>Forma de pago</label>
+                    <select name="forma_pago" class="form-select" required>
+                        <option value="">Seleccione</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                        <option value="Transferencia">Transferencia</option>
+                    </select>
+                </div>
 
-
-
-                
                 <div class="col-12">
                     <label>Enfermedades previas</label>
                     <textarea name="enfermedades" class="form-control" required></textarea>
@@ -383,52 +427,56 @@ $stmt_insert->close();
                     <label>Alergias conocidas</label>
                     <textarea name="alergias" class="form-control" required></textarea>
                 </div>
-                <div class="mb-3">
-    <label for="seguro_id" class="form-label">Seleccionar Seguro</label>
-    <select class="form-select" id="seguro_id" name="seguro_id" required onchange="mostrarDetallesSeguro()">
-        <option value="">Seleccione un seguro</option>
-        <?php foreach ($seguros as $seg): ?>
-            <option value="<?= $seg['id'] ?>"
-                    data-nombre="<?= htmlspecialchars($seg['nombre']) ?>"
-                    data-precio="<?= htmlspecialchars($seg['precio']) ?>"
-                    data-cobertura="<?= htmlspecialchars($seg['cobertura_maxima']) ?>">
-                <?= htmlspecialchars($seg['nombre']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-</div>
+                
+                <!-- Sección de selección de seguros -->
+                <div class="col-12 mb-4">
+                    <label class="form-label fw-bold fs-5 mb-3">Seleccionar Plan de Seguro</label>
+                    <input type="hidden" id="seguro_id" name="seguro_id" required>
+                    
+                    <div class="row" id="seguros_container">
+                        <?php if (count($seguros) > 0): ?>
+                            <?php foreach ($seguros as $seg): ?>
+                                <div class="col-md-6 mb-3">
+                                    <div class="seguro-card" data-id="<?= $seg['id'] ?>" onclick="seleccionarSeguro(this)">
+                                        <h5><?= htmlspecialchars($seg['nombre']) ?></h5>
+                                        <div class="seguro-details">
+                                            <span class="seguro-price">$<?= htmlspecialchars($seg['precio']) ?></span>
+                                            <span class="badge bg-info"><?= htmlspecialchars(substr($seg['cobertura_maxima'], 0, 30)) ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="col-12">
+                                <div class="alert alert-warning">No hay planes de seguro disponibles en este momento.</div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
-<div id="detalles_seguro" style="display:none;" class="bg-light border p-3 rounded">
-    <p><strong>Nombre:</strong> <span id="nombre_seguro"></span></p>
-    <p><strong>Precio:</strong> $<span id="precio_seguro"></span></p>
-    <p><strong>Cobertura Máxima:</strong> <span id="cobertura_seguro"></span></p>
-</div>
-
-
-<div class="col-12" id="campo_num_hijos" style="display:none">
+                <div class="col-12" id="campo_num_hijos">
                     <label>Dependientes</label>
-                    <input type="number" id="num_hijos" name="num_hijos" min="0" max="10" class="form-control">
+                    <input type="number" id="num_hijos" name="num_hijos" min="0" max="10" class="form-control" value="0">
                     <div id="advertencia_hijos" class="text-danger mt-1" style="display:none">No es aplicable para el seguro</div>
                 </div>
 
-
                 <div class="col-12" id="datos_hijos"></div>
-<div class="col-md-6">
-    <label>Subir documentos adicionales</label>
-    <input type="file" name="documentos_adicionales[]" class="form-control" accept=".pdf,.jpg,.png" multiple>
-</div>
+                <div class="col-md-6">
+                    <label>Subir documentos adicionales</label>
+                    <input type="file" name="documentos_adicionales[]" class="form-control" accept=".pdf,.jpg,.png" multiple>
+                </div>
                 <div class="col-12">
                     <label>Firma (imagen opcional)</label>
                     <input type="file" name="firma" class="form-control" accept="image/png">
                 </div>
-<div class="col-12">
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="1" id="acepto_terminos" name="acepto_terminos" required>
-        <label class="form-check-label" for="acepto_terminos">
-            Acepto los términos y condiciones
-        </label>
-    </div>
-</div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1" id="acepto_terminos" name="acepto_terminos" required>
+                        <label class="form-check-label" for="acepto_terminos">
+                            Acepto los términos y condiciones
+                        </label>
+                    </div>
+                </div>
 
                 <div class="col-12 text-center">
                     <button type="submit" class="btn btn-dark px-5">Enviar Solicitud</button>
@@ -440,21 +488,28 @@ $stmt_insert->close();
 </div>
 
 <script>
-    const tipoSeguro = document.getElementById('tipo_seguro');
     const estadoCivil = document.getElementById('estado_civil');
     const campoConyugueNombre = document.getElementById('campo_conyugue_nombre');
     const campoConyugueCedula = document.getElementById('campo_conyugue_cedula');
-    const campoNumHijos = document.getElementById('campo_num_hijos');
     const numHijosInput = document.getElementById('num_hijos');
     const datosHijosContainer = document.getElementById('datos_hijos');
     const advertenciaHijos = document.getElementById('advertencia_hijos');
 
-    tipoSeguro.addEventListener('change', () => {
-        const familiar = tipoSeguro.value === 'Salud Familiar';
-        campoNumHijos.style.display = familiar ? 'block' : 'none';
-        datosHijosContainer.innerHTML = '';
-    });
-        numHijosInput.addEventListener('input', () => {
+    // Función para seleccionar un seguro
+    function seleccionarSeguro(element) {
+        // Quitar la clase selected de todos los seguros
+        document.querySelectorAll('.seguro-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Agregar la clase selected al seguro seleccionado
+        element.classList.add('selected');
+        
+        // Actualizar el valor del campo oculto
+        document.getElementById('seguro_id').value = element.getAttribute('data-id');
+    }
+
+    numHijosInput.addEventListener('input', () => {
         const num = parseInt(numHijosInput.value);
         datosHijosContainer.innerHTML = '';
         advertenciaHijos.style.display = 'none';
@@ -466,44 +521,43 @@ $stmt_insert->close();
         }
 
         for (let i = 1; i <= num; i++) {
-    datosHijosContainer.innerHTML += `
-        <div class="row g-2 mb-2 border rounded p-2">
-            <div class="col-md-4">
-                <label>Dependiente ${i}</label>
-                <input type="text" name="dep_nombre_${i}" class="form-control" required>
-            </div>
-            <div class="col-md-4">
-                <label>Cédula</label>
-                <input type="text" name="dep_cedula_${i}" class="form-control" maxlength="10" pattern="\\d{10}" required>
-            </div>
-            <div class="col-md-4">
-                <label>Lugar de nacimiento</label>
-                <input type="text" name="dep_lugar_${i}" class="form-control" required>
-            </div>
-            <div class="col-md-4">
-                <label>Nacionalidad</label>
-                <input type="text" name="dep_nacionalidad_${i}" class="form-control" required>
-            </div>
-            <div class="col-md-2">
-                <label>Edad</label>
-                <input type="number" name="dep_edad_${i}" class="form-control" min="0" required>
-            </div>
-            <div class="col-md-3">
-                <label>Parentesco</label>
-                <input type="text" name="dep_parentesco_${i}" class="form-control" required>
-            </div>
-            <div class="col-md-3">
-                <label>Sexo</label>
-                <select name="dep_sexo_${i}" class="form-select" required>
-                    <option value="">Seleccione</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Femenino">Femenino</option>
-                </select>
-            </div>
-        </div>
-    `;
-}
-
+            datosHijosContainer.innerHTML += `
+                <div class="row g-2 mb-2 border rounded p-2">
+                    <div class="col-md-4">
+                        <label>Dependiente ${i}</label>
+                        <input type="text" name="dep_nombre_${i}" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Cédula</label>
+                        <input type="text" name="dep_cedula_${i}" class="form-control" maxlength="10" pattern="\\d{10}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Lugar de nacimiento</label>
+                        <input type="text" name="dep_lugar_${i}" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Nacionalidad</label>
+                        <input type="text" name="dep_nacionalidad_${i}" class="form-control" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Edad</label>
+                        <input type="number" name="dep_edad_${i}" class="form-control" min="0" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Parentesco</label>
+                        <input type="text" name="dep_parentesco_${i}" class="form-control" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Sexo</label>
+                        <select name="dep_sexo_${i}" class="form-select" required>
+                            <option value="">Seleccione</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
     });
 
     estadoCivil.addEventListener('change', () => {
@@ -511,8 +565,6 @@ $stmt_insert->close();
         campoConyugueNombre.style.display = casado ? 'block' : 'none';
         campoConyugueCedula.style.display = casado ? 'block' : 'none';
     });
-
-
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -535,27 +587,17 @@ document.querySelector("form").addEventListener("submit", function(e) {
         alert("Debes aceptar los términos y condiciones para enviar la solicitud de contratación del seguro.");
     }
 
+    // Verificar que se haya seleccionado un seguro
+    const seguroId = document.getElementById("seguro_id").value;
+    if (!seguroId) {
+        valido = false;
+        alert("Debes seleccionar un plan de seguro.");
+    }
+
     if (!valido) {
         e.preventDefault(); // Detiene el envío
     }
 });
 </script>
-<script>
-function mostrarDetallesSeguro() {
-    const select = document.getElementById('seguro_id');
-    const option = select.options[select.selectedIndex];
-    if (option.value !== "") {
-        document.getElementById('detalles_seguro').style.display = 'block';
-        document.getElementById('nombre_seguro').innerText = option.getAttribute('data-nombre');
-        document.getElementById('precio_seguro').innerText = option.getAttribute('data-precio');
-        document.getElementById('cobertura_seguro').innerText = option.getAttribute('data-cobertura');
-    } else {
-        document.getElementById('detalles_seguro').style.display = 'none';
-    }
-}
-</script>
-
-
-
 </body>
 </html>
