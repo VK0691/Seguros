@@ -89,7 +89,7 @@ $ingresosAnual = 60000;
     <h4><i class="fas fa-user-shield"></i>Panel Administrador</h4>
     <hr style="border-color:white">
     <a href="lista_usuarios.php"><i class="fas fa-users"></i> Usuarios</a>
-    <a href="seguros.php"><i class="fas fa-heartbeat"></i> Seguros Vida</a>
+    <a href="gestion_seguros.php"><i class="fas fa-heartbeat"></i> Seguros Vida</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
   </div>
 
