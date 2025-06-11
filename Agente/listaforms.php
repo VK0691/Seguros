@@ -128,29 +128,28 @@ while ($row = $debug_result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Enlace al CSS unificado -->
+    <link rel="stylesheet" href="dashboard-styles.css">
+    <!-- Font Awesome para iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to right, #002147, #ffffff);
-            color: #000;
+                        background-color:rgb(255, 255, 255);
+
+             color: #000;
         }
         h2 {
-            color: #002147;
+            color:#062D49;
+            font-size: 50px;
         }
         .table-dark {
-            background-color: #002147;
+            background-color:#062D49;
         }
         .table-dark th {
-            color: #FFD700;
+            background-color: #062D49;
+            color:rgb(255, 255, 255);
         }
-        .btn-primary {
-            background-color: #FFD700;
-            border-color: #FFD700;
-            color: #000;
-        }
-        .btn-success {
-            background-color: #002147;
-            border-color: #002147;
-        }
+        
         .btn-danger {
             background-color: #dc3545;
             border-color: #dc3545;
@@ -159,34 +158,15 @@ while ($row = $debug_result->fetch_assoc()) {
             font-size: 0.8rem;
             padding: 0.25rem 0.5rem;
         }
-        .action-form {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 5px 0;
-        }
-        .modal-header {
-            background-color: #002147;
-            color: white;
-        }
+        
         .debug-info {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
+            background-color:rgb(254, 231, 147);
+            border: 1px solidrgb(255, 255, 255);
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 20px;
         }
-        @media (max-width: 768px) {
-            h2 {
-                font-size: 1.5rem;
-            }
-            .table {
-                font-size: 0.8rem;
-            }
-            .action-form {
-                padding: 5px;
-            }
-        }
+        
     </style>
 </head>
 <body>

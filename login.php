@@ -71,8 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="container-fluid vh-100 d-flex flex-column flex-lg-row p-0">
   <!-- Lado Izquierdo -->
-<div class="text-center d-flex align-items-center justify-content-center col-lg-4 py-4" style="background-color: #062D49;">
-  <img src="img/usuario.jpg" alt="Icono Usuario" class="img-fluid" style="max-height: 300px;">
+<div class="text-center d-flex align-items-center justify-content-center col-lg-4 py-4" style="background-color: #002552;">
+  <img src="img/userv2.png" alt="Icono Usuario" class="img-fluid" style="max-height: 300px;">
 </div>
 
   <!-- Lado Derecho -->

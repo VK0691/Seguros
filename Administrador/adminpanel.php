@@ -72,12 +72,14 @@ $ingresosAnual = 60000;
   <title>Panel de Administrador</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/Administrador/estiloadmin.css" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fc; }
-    .sidebar { width: 250px; position: fixed; top: 0; bottom: 0; left: 0; padding: 20px; background-color:rgb(41, 59, 113); color: white; }
+    .sidebar { width: 250px; position: fixed; top: 0; bottom: 0; left: 0; padding: 20px; background-color:#002147; color: white; }
     .sidebar a { color: white; text-decoration: none; display: block; padding: 10px 15px; margin-bottom: 5px; border-radius: 5px; }
-    .sidebar a:hover, .sidebar a.active { background-color:rgb(15, 31, 80); }
+    .sidebar a:hover, .sidebar a.active { background-color:#002147; }
     .main-content { margin-left: 250px; padding: 30px; }
     .card { border-radius: 0.75rem; }
     .topbar { height: 60px; background-color: white; border-bottom: 1px solid #e3e6f0; display: flex; justify-content: flex-end; align-items: center; padding: 0 30px; position: fixed; top: 0; left: 250px; right: 0; z-index: 1000; }
@@ -85,8 +87,8 @@ $ingresosAnual = 60000;
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h4><i class="fas fa-user-shield"></i>Panel Administrador</h4>
+  <div class="sidebar" style="background-color:#002147;">
+    <h4><i class="fas fa-user-shield" ></i>Panel Administrador</h4>
     <hr style="border-color:white">
     <a href="lista_usuarios.php"><i class="fas fa-users"></i> Usuarios</a>
     <a href="gestion_seguros.php"><i class="fas fa-heartbeat"></i> Seguros Vida</a>

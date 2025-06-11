@@ -25,9 +25,11 @@ $resultado = $conn->query("SELECT * FROM usuarios");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Usuarios</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/Administrador/estiloadmin.css">
+
     <style>
         body {
-            background: linear-gradient(to right,rgb(135, 154, 175), #ffffff);
+            background: linear-gradient(135deg, #ffffff 50%,  #002147 50%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #000;
         }
@@ -43,7 +45,7 @@ $resultado = $conn->query("SELECT * FROM usuarios");
         .botones-acciones a {
             padding: 10px 20px;
             text-decoration: none;
-            border-radius: 30px;
+            border-radius: 5px;
             margin-left: 10px;
             transition: all 0.3s ease;
         }
@@ -60,7 +62,9 @@ $resultado = $conn->query("SELECT * FROM usuarios");
         .btn-regresar {
             background-color: #002147;
             color: #fff;
+            border: 5px;
         }
+        
 
         .btn-regresar:hover {
             background-color: #00112a;
@@ -84,26 +88,48 @@ $resultado = $conn->query("SELECT * FROM usuarios");
 
         th {
             background-color: #002147;
-            color: #FFD700;
+            color:rgb(255, 255, 255);
         }
 
         td {
-            background-color: #f1f1f1;
+            background-color:rgb(255, 255, 255);
         }
 
         td button {
             background-color: #dc3545;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 7px 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-top: 10px;
         }
-
+        
         td button:hover {
             background-color: #c82333;
         }
+
+        /* ==========================
+           Estilos para Botón Editar
+           ========================== */
+        .btn-editar {
+            background-color:rgb(255, 217, 46) !important;
+            color: black !important;
+            border: none !important;
+            padding: 7px 20px !important;
+            border-radius: 10px !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s !important;
+            margin-top: 10px !important;
+            text-decoration: none !important;
+            display: inline-block !important;
+        }
+        .btn-editar:hover {
+            background-color: #0056b3 !important;
+        }
+
+        /* Fin estilos botón editar */
 
         #modal-eliminar {
             display: none;
@@ -211,7 +237,7 @@ $resultado = $conn->query("SELECT * FROM usuarios");
                         <td><?= htmlspecialchars($fila['rol']) ?></td>
                         <td><?= $fila['estado'] ? 'Activo' : 'Inactivo' ?></td>
                         <td>
-                            <a href="editar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="editar_usuario.php?id=<?= $fila['id'] ?>" class="btn-editar">Editar</a>
                             <button onclick="mostrarModal(<?= $fila['id'] ?>)">Eliminar</button>
                         </td>
                     </tr>

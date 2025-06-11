@@ -113,16 +113,16 @@ $seguros = $conn->query("SELECT t.*, c.periodo_pago, c.monto_base, c.formula_pri
             padding: 1rem;
             border-radius: 0.5rem;
             background-color: #f8f9fa;
-            border-left: 4px solid #0d6efd;
+            border-left: 4px solid #002147;
         }
         .form-section h6 {
-            color: #0d6efd;
+            color: #002147;
             margin-bottom: 0.75rem;
             font-weight: 600;
         }
         .calculator-section {
             background-color: #e3f2fd;
-            border-left-color: #2196f3;
+            border-left-color: #002147;
         }
         .result-display {
             background-color: #fff;
@@ -135,6 +135,10 @@ $seguros = $conn->query("SELECT t.*, c.periodo_pago, c.monto_base, c.formula_pri
             font-size: 1.25rem;
             font-weight: bold;
             color: #28a745;
+        }
+        .card-header {
+            background-color: #002147 !important;
+            color: #fff !important;
         }
         @media (max-width: 768px) {
             .form-container {
@@ -158,8 +162,8 @@ $seguros = $conn->query("SELECT t.*, c.periodo_pago, c.monto_base, c.formula_pri
         <div class="row">
             <div class="col-lg-4 form-container">
                 <div class="card card-shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4><i class="fas fa-plus-circle me-2"></i>Nuevo Seguro</h4>
+                    <div class="card-header bg-primary text-white" style="background-color: #002147;">
+                        <h4><i class="fas fa-plus-circle me-2" ></i>Nuevo Seguro</h4>
                     </div>
                     <div class="card-body">
                         <?php if(isset($error)): ?>
