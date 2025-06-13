@@ -144,12 +144,11 @@
         <p class="mt-2">Ultimos Reembolsos</p>
       </div>
     </div>
-    <div class="col-sm-6 col-md-4">
-      <div class="card-btn">
-        <img src="../img/noti.jpg" width="50">
-        <p class="mt-2">Notificaciones</p>
-      </div>
-    </div>
+   <div class="col-sm-6 col-md-4">
+  <div class="card-btn" onclick="window.location.href='notificaciones.php'">
+    <img src="../img/noti.jpg" width="50">
+    <p class="mt-2">Notificaciones</p>
+    <small class="text-muted">Ver confirmaciones de documentos firmados</small>
   </div>
 </div>
 

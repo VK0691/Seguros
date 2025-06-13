@@ -506,3 +506,4 @@ $seguros = $conn->query("SELECT t.*, c.periodo_pago, c.monto_base, c.formula_pri
     </script>
 </body>
 </html>
+
