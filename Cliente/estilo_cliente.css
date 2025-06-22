@@ -1,0 +1,176 @@
+/* estilo_cliente.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  margin: 20px;
+  color: #222;
+}
+
+h1 {
+  font-weight: bold;
+  color: #222;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  gap: 40px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-photo img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #007bff; /* Azul para cliente */
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 26px;
+  text-align: center;
+  color: #007bff;
+}
+
+.user-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 160px;
+}
+
+.btn-square {
+  text-align: center;
+  padding: 12px 0;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-square:hover {
+  background-color: #0056b3;
+}
+
+.btn-logout {
+  background-color: #555;
+}
+
+.btn-logout:hover {
+  background-color: #333;
+}
+
+.right {
+  flex: 1.5;
+  background: #f0f8ff; /* Fondo azul claro */
+  border-radius: 12px;
+  padding: 20px 30px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  color: #0056b3;
+  position: relative;
+}
+
+.right h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #003366;
+}
+
+.detail {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.detail strong {
+  font-weight: 700;
+  color: #222;
+}
+
+/* Inputs para edición */
+.edit-mode input {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 17px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Botones guardar y cancelar */
+.btn-group-edit {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-group-edit button,
+.btn-group-edit .btn-cancel {
+  padding: 10px 25px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-group-edit button {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-group-edit button:hover {
+  background-color: #0056b3;
+}
+
+.btn-cancel {
+  background-color: #555;
+  color: white;
+  text-decoration: none;
+  line-height: 24px;
+  text-align: center;
+  display: inline-block;
+  border: none;
+}
+
+.btn-cancel:hover {
+  background-color: #333;
+}
+
+/* Mensajes de error y éxito */
+.message {
+  margin-bottom: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.error {
+  color: #a83232;
+}
+
+.success {
+  color: #007a00;
+}
+.btn-gestion {
+  background-color: #28a745; /* verde */
+  margin-top: 10px;
+}
+
+.btn-gestion:hover {
+  background-color: #218838;
+}
