@@ -1,4 +1,3 @@
-
 <?php
 error_reporting(0);
 ini_set('display_errors', 0);
@@ -72,7 +71,7 @@ $ingresosAnual = 60000;
   <title>Panel de Administrador</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="/Administrador/estiloadmin.css" rel="stylesheet">
+  <link href="/Administrador/estiloadmin.css" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -92,6 +91,7 @@ $ingresosAnual = 60000;
     <hr style="border-color:white">
     <a href="lista_usuarios.php"><i class="fas fa-users"></i> Usuarios</a>
     <a href="gestion_seguros.php"><i class="fas fa-heartbeat"></i> Seguros Vida</a>
+    <a href="reembolsos.php"><i class="fas fa-money-check-alt"></i> Gestión de Reembolsos</a> <!-- Botón agregado -->
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
   </div>
 
@@ -105,7 +105,6 @@ $ingresosAnual = 60000;
         <div class="col-md-3"><div class="card text-white bg-primary shadow p-3"><div class="text-white-50 small">Seguros Vida</div><h5><?php echo $totalseguros_vida; ?></h5></div></div>
         <div class="col-md-3"><div class="card text-white bg-success shadow p-3"><div class="text-white-50 small">Clientes</div><h5><?php echo $totalClientes; ?></h5></div></div>
         <div class="col-md-3"><div class="card text-white bg-info shadow p-3"><div class="text-white-50 small">Agentes</div><h5><?php echo $totalAgentes; ?></h5></div></div>
-        
       </div>
 
       <div class="card p-4 mb-4" id="usuarios">

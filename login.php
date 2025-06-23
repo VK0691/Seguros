@@ -11,6 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validación límite máximo 15 caracteres
     if (strlen($contrasena) > 15) {
         $error = "La contraseña no puede tener más de 15 caracteres.";
+    } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        $error = "Formato de correo no válido.";
     } else {
         if (!$conn) {
             die("Error de conexión a la base de datos: " . mysqli_connect_error());
@@ -32,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $error = "Usuario inactivo. Contacta al administrador.";
                 } else {
                     $_SESSION['usuario'] = $row['correo'];
+                    $_SESSION['id'] = $row['id']; // Almacena el ID del usuario en la sesión
                     $_SESSION['rol'] = $row['rol'];
 
                     if ($row['rol'] == 'Administrador') {
@@ -71,9 +74,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="container-fluid vh-100 d-flex flex-column flex-lg-row p-0">
   <!-- Lado Izquierdo -->
-<div class="text-center d-flex align-items-center justify-content-center col-lg-4 py-4" style="background-color: #002552;">
-  <img src="img/userv2.png" alt="Icono Usuario" class="img-fluid" style="max-height: 300px;">
-</div>
+  <div class="text-center d-flex align-items-center justify-content-center col-lg-4 py-4" style="background-color: #002552;">
+    <img src="img/userv2.png" alt="Icono Usuario" class="img-fluid" style="max-height: 300px;">
+  </div>
 
   <!-- Lado Derecho -->
   <div class="col-lg-8 d-flex align-items-center justify-content-center p-4">
@@ -105,7 +108,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 </html>
 
-
 <script>
   const inputContrasenaLogin = document.getElementById('contrasena');
   const mensajeLogin = document.getElementById('mensajeContrasena');
@@ -133,7 +135,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   });
 </script>
-
-
-</body>
-</html>
