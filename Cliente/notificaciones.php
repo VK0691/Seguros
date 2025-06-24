@@ -246,7 +246,7 @@ $result_documentos = $stmt_documentos->get_result();
         <header class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="page-title">
-                    <i class="fas fa-bell me-2"></i>Centro de Notificaciones
+                    <i class="fas fa-bell me-2"></i>Centro de Pólizas Activas
                 </h1>
                 <a href="clientedash.php" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-1"></i> Volver al Panel
@@ -256,11 +256,9 @@ $result_documentos = $stmt_documentos->get_result();
         
         <!-- Alertas informativas -->
         <div class="alert alert-info d-flex align-items-center">
-            <div class="notification-icon info">
-                <i class="fas fa-info-circle"></i>
-            </div>
+           
             <div>
-                <h5 class="alert-heading mb-1">Bienvenido al Centro de Notificaciones</h5>
+                <h5 class="alert-heading mb-1">Bienvenido al Centro de Pólizas</h5>
                 <p class="mb-0">Aquí encontrarás todas las actualizaciones sobre tus documentos, firmas digitales y solicitudes de seguro.</p>
             </div>
         </div>

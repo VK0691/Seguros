@@ -2,6 +2,24 @@
 session_start();
 require_once '../conexion.php'; // Asegúrate de que la ruta sea correcta
 
+// Función para formatear el tamaño de archivo en unidades legibles
+function formatFileSize($bytes) {
+    if ($bytes >= 1073741824) {
+        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+    } elseif ($bytes >= 1048576) {
+        $bytes = number_format($bytes / 1048576, 2) . ' MB';
+    } elseif ($bytes >= 1024) {
+        $bytes = number_format($bytes / 1024, 2) . ' KB';
+    } elseif ($bytes > 1) {
+        $bytes = $bytes . ' bytes';
+    } elseif ($bytes == 1) {
+        $bytes = $bytes . ' byte';
+    } else {
+        $bytes = '0 bytes';
+    }
+    return $bytes;
+}
+
 // Verifica si se ha pasado un ID de reembolso
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("Error: ID de reembolso no proporcionado.");
@@ -26,6 +44,16 @@ if ($result->num_rows === 0) {
 
 $reembolso = $result->fetch_assoc();
 $stmt->close();
+
+
+
+// Después de obtener los detalles del reembolso
+$query_docs = "SELECT * FROM documentos_reembolso WHERE reembolso_id = ?";
+$stmt_docs = $conn->prepare($query_docs);
+$stmt_docs->bind_param("i", $reembolso_id);
+$stmt_docs->execute();
+$documentos = $stmt_docs->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt_docs->close();
 $conn->close();
 ?>
 
@@ -73,6 +101,39 @@ $conn->close();
             </div>
             <div class="card-footer text-center">
                 <a href="reembolsos.php" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Volver a la lista de reembolsos</a>
+            </div>
+        </div>
+
+        <!-- Documentos Cargados -->
+        <div class="card mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Documentos Cargados</h5>
+            </div>
+            <div class="card-body">
+                <?php if (count($documentos) > 0): ?>
+                    <ul class="list-group list-group-flush">
+                        <?php foreach ($documentos as $doc): ?>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-file-alt fa-lg text-primary me-3"></i>
+                                <div class="flex-grow-1">
+                                    <a href="<?= htmlspecialchars($doc['ruta']) ?>" target="_blank" class="fw-bold text-decoration-underline">
+                                        <?= htmlspecialchars($doc['nombre_original']) ?>
+                                    </a>
+                                    <div class="text-muted small">
+                                        <?= htmlspecialchars($doc['tipo']) ?> &middot; <?= formatFileSize($doc['tamaño']) ?>
+                                    </div>
+                                </div>
+                                <a href="<?= htmlspecialchars($doc['ruta']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary ms-3" title="Ver/Descargar">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <div class="alert alert-warning mb-0">
+                        <i class="fas fa-exclamation-circle me-2"></i>No se han cargado documentos para este reembolso.
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

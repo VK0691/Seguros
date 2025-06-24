@@ -31,6 +31,27 @@ $stmt_count->bind_param("s", $estado);
 $stmt_count->execute();
 $total = $stmt_count->get_result()->fetch_assoc()['total'];
 $paginas = ceil($total / $por_pagina);
+
+// Procesar acciones de aceptar o rechazar
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
+    $reembolso_id = intval($_POST['reembolso_id']);
+    $accion = $_POST['accion'];
+
+    if ($accion === 'aceptar') {
+        $update_query = "UPDATE reembolsos SET estado = 'aprobado' WHERE id = ?";
+    } elseif ($accion === 'rechazar') {
+        $update_query = "UPDATE reembolsos SET estado = 'rechazado' WHERE id = ?";
+    }
+
+    $update_stmt = $conn->prepare($update_query);
+    $update_stmt->bind_param("i", $reembolso_id);
+    $update_stmt->execute();
+    $update_stmt->close();
+    
+    // Redirigir para evitar reenvío de formulario
+    header("Location: reembolsos.php?estado=$estado&pagina=$pagina");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -106,6 +127,17 @@ $paginas = ceil($total / $por_pagina);
                                     <a href="ver_reembolso.php?id=<?= $r['id'] ?>" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye"></i> Ver
                                     </a>
+                                    <?php if ($r['estado'] === 'pendiente'): ?>
+                                    <form method="POST" class="d-inline">
+                                        <input type="hidden" name="reembolso_id" value="<?= $r['id'] ?>">
+                                        <button type="submit" name="accion" value="aceptar" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-check-circle"></i> Aceptar
+                                        </button>
+                                        <button type="submit" name="accion" value="rechazar" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-x-circle"></i> Rechazar
+                                        </button>
+                                    </form>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

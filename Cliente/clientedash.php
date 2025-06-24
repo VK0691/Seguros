@@ -141,9 +141,9 @@ if (!isset($_SESSION['usuario'])) {
     </a>
     </div>
     <div class="col-sm-6 col-md-4">
-      <div class="card-btn">
-        <img src="../img/renovar.jpg" width="50">
-        <p class="mt-2">Próximas Renovaciones</p>
+      <div class="card-btn" onclick="window.location.href='soporteagente.php'">
+        <img src="../img/support.png" width="50">
+        <p class="mt-2">Soporte Agente</p>
       </div>
     </div>
      <div class="col-sm-6 col-md-4">
@@ -155,8 +155,8 @@ if (!isset($_SESSION['usuario'])) {
    <div class="row">
     <div class="col-sm-6 col-md-4">
         <div class="card-btn" onclick="window.location.href='notificaciones.php'">
-            <img src="../img/noti.jpg" width="50">
-            <p class="mt-2">Notificaciones</p>
+            <img src="../img/xd.jpg" width="50">
+            <p class="mt-2">Estado de Pólizas Activas</p>
             <small class="text-muted">Ver confirmaciones de documentos firmados</small>
         </div>
     </div>

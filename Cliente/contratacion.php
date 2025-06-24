@@ -320,7 +320,7 @@ Forma de Pago: {$forma_pago}"), 0);
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Formulario Seguro de Salud</title>
+    <title>Formulario Seguro de Vida</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -401,7 +401,7 @@ Forma de Pago: {$forma_pago}"), 0);
 <body>
 <div class="container py-5">
     <div class="form-container mx-auto col-lg-8 col-md-10">
-        <h2 class="mb-4 text-center text-primary">Formulario Seguros de Salud</h2>
+        <h2 class="mb-4 text-center text-primary">Formulario Seguro de Vida</h2>
         <?php echo $mensaje ?? ''; ?>
         <form method="POST" action="" enctype="multipart/form-data" class="needs-validation" id="form-firma" novalidate>
             <div class="row g-3">
@@ -539,72 +539,31 @@ Forma de Pago: {$forma_pago}"), 0);
                     <textarea name="alergias" class="form-control" required></textarea>
                 </div>
                 
-             <div class="col-12 mb-4">
-    <label class="form-label fw-bold fs-5 mb-3">Ver Planes de Seguro</label>
-    <input type="hidden" id="seguro_id" name="seguro_id" required>
-    
-    <div class="row" id="seguros_container">
-        <?php if (count($seguros) > 0): ?>
-            <?php foreach ($seguros as $seg): ?>
-                <div class="col-md-6 mb-3">
-                    <div class="seguro-card" data-id="<?= $seg['id'] ?>" onclick="abrirDetalles(<?= $seg['id'] ?>)">
-                        <h5><?= htmlspecialchars($seg['nombre']) ?></h5>
-                        <div class="seguro-details">
-                            <span class="seguro-price">$<?= htmlspecialchars($seg['precio']) ?></span>
-                            <span class="badge bg-info"><?= htmlspecialchars(substr($seg['cobertura_maxima'], 0, 30)) ?></span>
-                        </div>
+                <!-- Sección de selección de seguros -->
+                <div class="col-12 mb-4">
+                    <label class="form-label fw-bold fs-5 mb-3">Seleccionar Plan de Seguro</label>
+                    <input type="hidden" id="seguro_id" name="seguro_id" required>
+                    
+                    <div class="row" id="seguros_container">
+                        <?php if (count($seguros) > 0): ?>
+                            <?php foreach ($seguros as $seg): ?>
+                                <div class="col-md-6 mb-3">
+                                    <div class="seguro-card" data-id="<?= $seg['id'] ?>" onclick="seleccionarSeguro(this)">
+                                        <h5><?= htmlspecialchars($seg['nombre']) ?></h5>
+                                        <div class="seguro-details">
+                                            <span class="seguro-price">$<?= htmlspecialchars($seg['precio']) ?></span>
+                                            <span class="badge bg-info"><?= htmlspecialchars(substr($seg['cobertura_maxima'], 0, 30)) ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="col-12">
+                                <div class="alert alert-warning">No hay planes de seguro disponibles en este momento.</div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="col-12">
-                <div class="alert alert-warning">No hay planes de seguro disponibles en este momento.</div>
-            </div>
-        <?php endif; ?>
-    </div>
-
-    <!-- ComboBox para seleccionar un plan de seguro -->
-    <div class="mb-4">
-        <label class="form-label fw-bold fs-5 mb-3">Seleccionar Plan de Seguro (ComboBox)</label>
-        <select class="form-select" id="seguro_select" name="seguro_select" required onchange="actualizarSeguroId()">
-            <option value="" selected disabled>-- Seleccione un plan de seguro --</option>
-            <?php if (count($seguros) > 0): ?>
-                <?php foreach ($seguros as $seg): ?>
-                    <option value="<?= $seg['id'] ?>">
-                        <?= htmlspecialchars($seg['nombre']) ?> - 
-                        $<?= htmlspecialchars($seg['precio']) ?> (Cobertura: $<?= htmlspecialchars($seg['cobertura_maxima']) ?>)
-                    </option>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <option disabled>No hay planes disponibles</option>
-            <?php endif; ?>
-        </select>
-    </div>
-</div>
-
-<script>
-function abrirDetalles(seguroId) {
-    window.open('detalles_seguro.php?id=' + seguroId, '_blank', 'width=800,height=600');
-}
-
-function actualizarSeguroId() {
-    const select = document.getElementById('seguro_select');
-    const seguroId = select.value;
-    document.getElementById('seguro_id').value = seguroId; // Actualiza el campo oculto
-}
-
-// Validación antes de enviar el formulario
-function validarFormulario() {
-    const seguroId = document.getElementById('seguro_id').value;
-    if (!seguroId) {
-        alert('El campo seguro_id no puede estar vacío. Por favor, seleccione un plan de seguro.');
-        return false; // Evita el envío del formulario
-    }
-    return true; // Permite el envío del formulario
-}
-</script>
-
-
 
                 <div class="col-12" id="campo_num_hijos">
                     <label>Dependientes</label>

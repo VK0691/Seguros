@@ -1,22 +1,20 @@
 <?php
 session_start();
 
+// Refuerza la seguridad de la sesión
 if (!isset($_SESSION['session_regenerada'])) {
     session_regenerate_id(true);
     $_SESSION['session_regenerada'] = true;
 }
 
-if (!isset($_SESSION['usuario']) || !isset($_SESSION['rol'])) {
+// Verifica que la sesión esté activa y el usuario tiene permisos de agente
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['rol']) || $_SESSION['rol'] !== 'Agente') {
+    session_destroy();
     header("Location: ../login.php");
     exit();
 }
 
 include '../conexion.php';
-
-if ($_SESSION['rol'] != 'Agente') {
-    header("Location: ../login.php");
-    exit();
-}
 
 $correoSesion = $_SESSION['usuario'];
 $error = '';
@@ -109,6 +107,13 @@ $conn->close();
 
     <?php if ($success): ?>
       <div id="mensajeExito" class="message success"><?= htmlspecialchars($success) ?></div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['mensaje'])): ?>
+    <div class="alert alert-success mt-3">
+        <?= $_SESSION['mensaje'] ?>
+    </div>
+    <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
     <form id="formDetalles" method="POST" action="panel_agente.php" style="display: none;">

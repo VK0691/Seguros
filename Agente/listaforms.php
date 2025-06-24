@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+// Verifica que la sesión esté activa y el usuario tiene permisos
 if (!isset($_SESSION['usuario'])) {
     header("Location: ../login.php");
     exit();
@@ -16,8 +17,10 @@ $stmt->execute();
 $result = $stmt->get_result();
 $usuario = $result->fetch_assoc();
 
-if (!in_array($usuario['rol'], ['Administrador', 'Agente'])) {
-    echo "<p>No tienes permisos para acceder a esta página.</p>";
+if (!$usuario || !in_array($usuario['rol'], ['Administrador', 'Agente'])) {
+    // Si no existe el usuario o no tiene el rol adecuado
+    session_destroy();
+    header("Location: ../login.php");
     exit();
 }
 
@@ -384,6 +387,31 @@ while ($row = $debug_result->fetch_assoc()) {
                                     <?php endif; ?>
                                 </td>
                                 <td>
+                                    <!-- Botón para generar contrato -->
+                                    <?php
+$pdf_contrato = glob("../pdf/contrato_seguro_{$row['usuario_id']}*.pdf");
+$contrato_generado = ($pdf_contrato && file_exists($pdf_contrato[0]));
+?>
+
+<?php if ($row['estado'] === 'Aprobado'): ?>
+    <?php if ($contrato_generado): ?>
+        <span class="badge bg-success mb-1"><i class="fas fa-file-pdf"></i> Contrato generado</span>
+        <!-- Ver Contrato (sin firma) -->
+        <a href="<?= $pdf_contrato[0] ?>" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="Ver Contrato">
+            <i class="fas fa-eye"></i> Ver Contrato
+        </a>
+        <!-- Ver Contrato Firmado (con firma del cliente) -->
+        <a href="generar_contrato_firmado.php?usuario_id=<?= $row['usuario_id'] ?>" target="_blank" class="btn btn-sm btn-success mb-1" title="Ver Contrato Firmado">
+            <i class="fas fa-signature"></i> Ver Contrato Firmado
+        </a>
+    <?php else: ?>
+        <!-- Generar Contrato -->
+        <a href="generar_contrato.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-primary mb-1" title="Generar Contrato">
+            <i class="fas fa-file-pdf"></i> Generar Contrato
+        </a>
+    <?php endif; ?>
+<?php endif; ?>
+                                    <!-- Otros botones para ver documentos -->
                                     <?php
                                     // Ver PDF
                                     $pdfPath = glob("../pdf/solicitud_seguro_{$row['usuario_id']}*.pdf");
