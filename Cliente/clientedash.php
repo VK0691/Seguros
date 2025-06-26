@@ -123,8 +123,7 @@ if (!isset($_SESSION['usuario'])) {
 <body>
 
 <div class="sidebar">
-  <a href="#">Pólizas Activas</a>
-  <a href="#">Estado de pago al día</a>
+  <a href="historialpagos.php">Historial de Pagos</a>
   <a href="logout.php">Cerrar Sesión</a>
 </div>
 
