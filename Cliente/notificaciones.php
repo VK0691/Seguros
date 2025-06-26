@@ -64,6 +64,13 @@ $result_documentos = $stmt_documentos->get_result();
 <!DOCTYPE html>
 <html lang="es">
 <head>
+     <?php if (isset($_GET['mensaje'])): ?>
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <?= htmlspecialchars($_GET['mensaje']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+<?php endif; ?>
     <meta charset="UTF-8">
     <title>Notificaciones - Sistema de Seguros</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -543,5 +550,7 @@ $result_documentos = $stmt_documentos->get_result();
             });
         });
     </script>
+    
 </body>
 </html>
+

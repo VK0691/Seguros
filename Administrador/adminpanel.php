@@ -92,6 +92,7 @@ $ingresosAnual = 60000;
     <a href="lista_usuarios.php"><i class="fas fa-users"></i> Usuarios</a>
     <a href="gestion_seguros.php"><i class="fas fa-heartbeat"></i> Seguros Vida</a>
     <a href="reembolsos.php"><i class="fas fa-money-check-alt"></i> Gestión de Reembolsos</a> <!-- Botón agregado -->
+    <a href="reportes.php"><i class="fas fa-chart-bar"></i> Reportes</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
   </div>
 
@@ -122,6 +123,17 @@ $ingresosAnual = 60000;
           <button type="submit" name="crear_usuario" class="btn btn-success mt-3">Crear Usuario</button>
         </form>
       </div>
+
+      <?php if (isset($_GET['mensaje'])): ?>
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+          <i class="fas fa-check-circle me-2"></i>
+          <?= htmlspecialchars($_GET['mensaje']) ?>
+          <?php if (isset($_GET['pdf'])): ?>
+            <a href="../pdf/<?= htmlspecialchars($_GET['pdf']) ?>" target="_blank" class="btn btn-link">Ver Orden de Pago</a>
+          <?php endif; ?>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 

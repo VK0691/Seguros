@@ -15,7 +15,7 @@ $result_seguros = $conn->query($sql_seguros);
 $seguros = [];
 while ($row = $result_seguros->fetch_assoc()) {
     $seguros[] = $row;
-}
+}   
 
 if (!isset($_SESSION['usuario'])) {
     header("Location: ../login.php");
@@ -579,72 +579,7 @@ Forma de Pago: {$forma_pago}"), 0);
                     <small class="text-muted">PDF, PNG, JPG, JPEG, DOCX. Max. 10</small>
                 </div>
                 <!-- Sección de firma digital mejorada -->
-<div class="col-12 mt-4">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fas fa-signature"></i> Registrar Firma Digital</h5>
-        </div>
-        <div class="card-body">
-            <div class="alert alert-info">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-info-circle fs-4 me-3"></i>
-                    <div>
-                        <h6 class="mb-1">Validez Legal de la Firma</h6>
-                        <p class="mb-0">Tu firma digital tiene validez legal y será utilizada para certificar tu solicitud de seguro.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Pestañas de firma -->
-            <ul class="nav nav-tabs mb-3" id="firma-tabs">
-                <li class="nav-item">
-                    <button class="nav-link active" id="tab-dibujar" type="button">
-                        <i class="fas fa-pen me-2"></i>Dibujar Firma
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="tab-subir" type="button">
-                        <i class="fas fa-upload me-2"></i>Subir Imagen
-                    </button>
-                </li>
-            </ul>
-            
-            <!-- Contenido de las pestañas -->
-            <div id="content-dibujar" style="display: block;">
-                <p>Dibuja tu firma en el recuadro:</p>
-                <div class="border border-2 border-primary rounded mb-3" style="border-style: dashed !important;">
-                    <canvas id="firma-canvas" width="100%" height="200" style="width: 100%; cursor: crosshair;"></canvas>
-                </div>
-                <button type="button" id="limpiar-firma" class="btn btn-outline-secondary">
-                    <i class="fas fa-eraser me-2"></i>Limpiar
-                </button>
-                <input type="hidden" name="firma_canvas_data" id="firma_canvas_data">
-            </div>
-            
-            <div id="content-subir" style="display: none;">
-                <div class="mb-3">
-                    <label class="form-label">Sube una imagen de tu firma:</label>
-                    <input type="file" name="firma" id="firma_upload" class="form-control" accept="image/png,image/jpg,image/jpeg">
-                    <small class="text-muted">Formatos permitidos: PNG, JPG, JPEG. Tamaño máximo: 2MB</small>
-                </div>
-                
-                <div class="mb-3" id="firma-preview-container" style="display: none;">
-                    <label class="form-label">Vista previa:</label>
-                    <div class="border rounded p-2 bg-light">
-                        <img id="firma-preview" class="img-fluid" style="max-height: 150px;" alt="Vista previa de la firma">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-check mt-3">
-                <input class="form-check-input" type="checkbox" id="acepto_firma" name="acepto_firma" required>
-                <label class="form-check-label" for="acepto_firma">
-                    Acepto que esta firma tiene validez legal y autorizo su uso en mi solicitud de seguro
-                </label>
-            </div>
-        </div>
-    </div>
-</div>
+
                                         
                                     </div>
                                 </div>

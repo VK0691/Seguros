@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firma_canvas_data']))
 <body>
     <div class="container mt-4">
         <h2>Notificación de Aprobación</h2>
-        <p>Su solicitud de reembolso ha sido aprobada. Por favor, firme el contrato a continuación:</p>
+        <p>Su solicitud de poliza ha sido aprobada. Por favor, firme el contrato a continuación:</p>
         
         <h5>Contrato</h5>
         <?php if ($contrato_pdf): ?>

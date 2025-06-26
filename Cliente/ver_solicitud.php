@@ -502,6 +502,7 @@ function obtenerRutaArchivo($nombre, $tipo) {
     </style>
 </head>
 <body>
+   
     <div class="dashboard-container">
         <!-- Header -->
         <header class="mb-4">
@@ -778,114 +779,44 @@ function obtenerRutaArchivo($nombre, $tipo) {
                     </div>
                 </div>
                 
-                <!-- PDF de la solicitud -->
-                <div class="document-card card">
-                    <div class="card-body">
-                        <h5><i class="fas fa-file-pdf me-2"></i>Documento Final</h5>
-                        <?php
-                        $pdfPath = glob("../pdf/solicitud_seguro_{$solicitud['usuario_id']}*.pdf");
-                        if ($pdfPath && file_exists($pdfPath[0])):
-                        ?>
-                            <p class="mb-2"><strong>Archivo:</strong> <?= basename($pdfPath[0]) ?></p>
-                            <div class="action-buttons mt-3">
-                                <a href="<?= $pdfPath[0] ?>" target="_blank" class="btn btn-danger">
-                                    <i class="fas fa-file-pdf me-1"></i> Ver PDF
-                                </a>
-                            </div>
-                        <?php else: ?>
-                            <div class="alert alert-warning mb-0">
-                                <i class="fas fa-exclamation-circle me-1"></i> No se encontró el PDF de la solicitud.
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
+              
         
-        <!-- Firma Digital -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0"><i class="fas fa-signature me-2"></i>Firma Digital</h4>
-            </div>
+        <!-- PDF del contrato firmado -->
+        <div class="document-card card">
             <div class="card-body">
-                <?php if (!empty($solicitud['firma'])): ?>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="alert alert-success">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-check-circle fa-2x me-3"></i>
-                                    <div>
-                                        <h5 class="alert-heading mb-1">Firma Digital Registrada</h5>
-                                        <p class="mb-0">Tu firma ha sido validada y almacenada de forma segura.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <h5><i class="fas fa-info-circle me-2"></i>Detalles de la Firma</h5>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>Fecha de firma:</span>
-                                        <strong><?= $solicitud['timestamp_firma'] ? date('d/m/Y H:i:s', strtotime($solicitud['timestamp_firma'])) : 'No disponible' ?></strong>
-                                    </li>
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="text-center">
-                                <h5><i class="fas fa-signature me-2"></i>Tu Firma Digital</h5>
-                                <?php
-                                $firma_base64 = base64_encode($solicitud['firma']);
-                                ?>
-                                <img src="data:image/png;base64,<?= $firma_base64 ?>" alt="Firma Digital" class="firma-preview img-fluid" style="max-width: 300px;">
-                                <p class="text-muted mt-2">Esta es la imagen de tu firma digital registrada en el sistema.</p>
-                            </div>
-                        </div>
+                <h5><i class="fas fa-file-pdf me-2"></i>Contrato Firmado</h5>
+                <?php
+                $pdfContrato = glob("../pdf/contrato_seguro_firmado_{$solicitud['usuario_id']}*.pdf");
+                if ($pdfContrato && file_exists($pdfContrato[0])):
+                ?>
+                    <p class="mb-2"><strong>Archivo:</strong> <?= basename($pdfContrato[0]) ?></p>
+                    <div class="action-buttons mt-3">
+                        <a href="<?= $pdfContrato[0] ?>" target="_blank" class="btn btn-danger">
+                            <i class="fas fa-file-pdf me-1"></i> Ver Contrato Firmado
+                        </a>
                     </div>
-                    
-                    <?php if (!empty($firmas)): ?>
-                        <div class="mt-4">
-                            <h5><i class="fas fa-history me-2"></i>Historial de Firmas</h5>
-                            <div class="timeline">
-                                <?php foreach ($firmas as $firma): ?>
-                                    <div class="timeline-item">
-                                        <div class="card mb-2">
-                                            <div class="card-body">
-                                                <div class="d-flex justify-content-between">
-                                                    <h6 class="mb-1"><?= htmlspecialchars($firma['archivo_firma']) ?></h6>
-                                                    <span class="timeline-date"><?= date('d/m/Y H:i', strtotime($firma['timestamp'])) ?></span>
-                                                </div>
-                                                <p class="mb-1">Dirección IP: <?= htmlspecialchars($firma['ip_address']) ?></p>
-                                                <span class="badge <?= $firma['validada'] ? 'bg-success' : 'bg-warning' ?>">
-                                                    <?= $firma['validada'] ? 'Validada' : 'Pendiente' ?>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    
                 <?php else: ?>
-                    <div class="alert alert-warning">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
-                            <div>
-                                <h5 class="alert-heading mb-1">Firma Digital Pendiente</h5>
-                                <p class="mb-2">Esta solicitud requiere tu firma digital para continuar con el proceso.</p>
-                                <a href="firmar_documento.php?id=<?= $solicitud_id ?>" class="btn btn-primary">
-                                    <i class="fas fa-signature me-1"></i> Firmar Documento
-                                </a>
-                            </div>
-                        </div>
+                    <div class="alert alert-warning mb-0">
+                        <i class="fas fa-exclamation-circle me-1"></i> No se encontró el contrato firmado. Si ya firmaste, espera unos minutos y recarga la página.
                     </div>
                 <?php endif; ?>
             </div>
         </div>
-    </div>
+
+        <?php
+// Busca la orden de pago más reciente para este usuario
+$orden_pago = glob("../pdf/orden_pago_{$usuario['id']}*.pdf");
+if ($orden_pago && file_exists($orden_pago[0])): ?>
+    <a href="<?= $orden_pago[0] ?>" target="_blank" class="btn btn-warning btn-sm mt-2">
+        <i class="fas fa-file-invoice-dollar"></i> Ver Orden de Pago
+    </a>
+<?php endif; ?>
+<!-- Botón "Pagar" -->
+    <?php if ($solicitud['estado'] === 'Aprobado'): ?>
+        <a href="simular_cobro.php?id=<?= $solicitud['id'] ?>" class="btn btn-success">
+            <i class="fas fa-credit-card"></i> Pagar
+        </a>
+    <?php endif; ?>
     
     <!-- Modal para ver documentos -->
     <div class="modal fade" id="documentosModal" tabindex="-1" aria-labelledby="documentosModalLabel" aria-hidden="true">
@@ -906,32 +837,7 @@ function obtenerRutaArchivo($nombre, $tipo) {
     </div>
     
     
-    
-    <!-- Modal para mostrar hash completo -->
-    <div class="modal fade" id="hashModal" tabindex="-1" aria-labelledby="hashModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="hashModalLabel">Hash de Verificación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-info">
-                        <p>El hash de verificación es una huella digital única que garantiza la integridad de tu firma digital.</p>
-                    </div>
-                    <div class="p-3 bg-light border rounded">
-                        <code id="hashCompleto" style="word-break: break-all;"></code>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="copiarHash()">
-                        <i class="fas fa-copy me-1"></i> Copiar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+  
     
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1037,25 +943,7 @@ function verDocumentos(nombreArchivos, tipo) {
     modal.show();
 }
         
-        // Función para mostrar el hash completo
-        function mostrarHashCompleto(hash) {
-            const hashElement = document.getElementById('hashCompleto');
-            if (hashElement) {
-                hashElement.textContent = hash;
-                const modal = new bootstrap.Modal(document.getElementById('hashModal'));
-                modal.show();
-            }
-        }
-        
-        // Función para copiar el hash al portapapeles
-        function copiarHash() {
-            const hashText = document.getElementById('hashCompleto').textContent;
-            navigator.clipboard.writeText(hashText).then(() => {
-                alert('Hash copiado al portapapeles');
-            }).catch(err => {
-                console.error('Error al copiar: ', err);
-            });
-        }
+       
     </script>
 </body>
 </html>

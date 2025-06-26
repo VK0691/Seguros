@@ -74,12 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['solicitud_id']) && iss
 
         } elseif ($accion === 'rechazar') {
             $estado = 'Rechazado';
+            $motivo_rechazo = $_POST['motivo_rechazo'] ?? '';
+            $motivo_rechazo_detalle = $_POST['motivo_rechazo_detalle'] ?? '';
 
             $sql_update = "UPDATE seguros_vida 
-                           SET estado = ?
+                           SET estado = ?, motivo_rechazo = ?, motivo_rechazo_detalle = ?
                            WHERE id = ?";
             $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param("si", $estado, $id);
+            $stmt_update->bind_param("sssi", $estado, $motivo_rechazo, $motivo_rechazo_detalle, $id);
 
             $mensaje = "<div class='alert alert-warning'>Solicitud rechazada correctamente.</div>";
 
@@ -400,9 +402,13 @@ $contrato_generado = ($pdf_contrato && file_exists($pdf_contrato[0]));
         <a href="<?= $pdf_contrato[0] ?>" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="Ver Contrato">
             <i class="fas fa-eye"></i> Ver Contrato
         </a>
-        <!-- Ver Contrato Firmado (con firma del cliente) -->
+        <!-- Ver Contrato Firmado (con firma del cliente) -->   
         <a href="generar_contrato_firmado.php?usuario_id=<?= $row['usuario_id'] ?>" target="_blank" class="btn btn-sm btn-success mb-1" title="Ver Contrato Firmado">
             <i class="fas fa-signature"></i> Ver Contrato Firmado
+        </a>
+        <!-- Generar Orden de Pago -->
+        <a href="generar_ordenpago.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-sm btn-warning mb-1" title="Generar Orden de Pago">
+            <i class="fas fa-file-invoice-dollar"></i> Generar Orden de Pago
         </a>
     <?php else: ?>
         <!-- Generar Contrato -->
@@ -482,13 +488,20 @@ $contrato_generado = ($pdf_contrato && file_exists($pdf_contrato[0]));
                 </table>
             </div>
             
-            <div class="text-center mt-4">
-                <a href="panel_agente.php" class="btn btn-dark">
-                    <i class="fas fa-arrow-left"></i> Regresar al Panel
-                </a>
-            </div>
-        </div>
-    </div>
+            <?php
+// Redirige según el rol del usuario
+if ($usuario['rol'] === 'Administrador') {
+    $panel_url = '../Administrador/adminpanel.php';
+} elseif ($usuario['rol'] === 'Agente') {
+    $panel_url = 'panel_agente.php';
+} else {
+    $panel_url = '../login.php'; // Por si acaso, para otros roles no permitidos
+}
+?>
+<div class="text-center mt-4">
+    <a href="<?= $panel_url ?>" class="btn btn-dark">
+        <i class="fas fa-arrow-left"></i> Regresar al Panel
+    </a>
 </div>
 
 <!-- Modal para aprobar solicitud -->

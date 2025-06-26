@@ -1,5 +1,21 @@
 <?php
 require_once '../conexion.php';
+session_start();
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+$usuario_id = $_SESSION['id'];
+$stmt_usuario = $conn->prepare("SELECT * FROM usuarios WHERE id = ?");
+$stmt_usuario->bind_param("i", $usuario_id);
+$stmt_usuario->execute();
+$result_usuario = $stmt_usuario->get_result();
+$usuario = $result_usuario->fetch_assoc();
+$stmt_usuario->close();
+?>
+
+<?php
+
 
 // Obtener parámetros de filtrado
 $estado = isset($_GET['estado']) ? $_GET['estado'] : 'pendiente';
@@ -84,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
                 <a href="?estado=pagado" class="btn btn-outline-secondary <?= $estado === 'pagado' ? 'active' : '' ?>">Pagados</a>
             </div>
         </div>
-
+         
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="table-responsive">
@@ -144,6 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
                         </tbody>
                     </table>
                 </div>
+                
 
                 <!-- Paginación -->
                 <nav aria-label="Page navigation">
@@ -155,8 +172,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
                         <?php endfor; ?>
                     </ul>
                 </nav>
+
+                
             </div>
         </div>
     </div>
+    <?php
+// Redirige según el rol del usuario
+if ($usuario['rol'] === 'Administrador') {
+    $panel_url = '../Administrador/adminpanel.php';
+} elseif ($usuario['rol'] === 'Agente') {
+    $panel_url = '../Agente/panel_agente.php';
+} else {
+    $panel_url = '../login.php'; // Por si acaso, para otros roles no permitidos
+}
+?>
+<div class="text-center mt-4">
+    <a href="<?= $panel_url ?>" class="btn btn-dark">
+        <i class="fas fa-arrow-left"></i> Regresar al Panel
+    </a>
+</div>
+
 </body>
 </html>

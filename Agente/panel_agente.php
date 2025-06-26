@@ -95,6 +95,10 @@ $conn->close();
       <a href="logout.php" class="btn-square btn-logout">Cerrar sesión</a>
       <a href="clientes_listado.php" class="btn-square btn-gestion-clientes">Gestionar clientes</a>
       <a href="listaforms.php" class="btn-square btn-solicitudes">Revisar Solicitudes</a>
+      <a href="../Administrador/reembolsos.php" class="btn-square btn-solicitudes">Gestionar Reembolsos</a>
+      <a href="../Administrador/reportes.php" class="btn-square btn-solicitudes">Gestionar Reportes</a>
+
+
     </div>
   </div>
 
@@ -114,6 +118,15 @@ $conn->close();
         <?= $_SESSION['mensaje'] ?>
     </div>
     <?php unset($_SESSION['mensaje']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['mensaje'])): ?>
+    <div class="alert alert-success">
+        <?= htmlspecialchars($_GET['mensaje']) ?>
+        <?php if (isset($_GET['pdf'])): ?>
+            <a href="../pdf/<?= htmlspecialchars($_GET['pdf']) ?>" target="_blank" class="btn btn-link">Ver Orden de Pago</a>
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
 
     <form id="formDetalles" method="POST" action="panel_agente.php" style="display: none;">
